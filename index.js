@@ -1,15 +1,15 @@
 const Readable = require('stream').Readable
 const pump = require('pump')
-const concat = require('concat-stream')
+const collect = require('collect-stream')
 const ln = require('hyperdrive-ln')
 
 module.exports = HyperIdentity
 
 function HyperIdentity (drive, key) {
-  if (!(this instanceof HyperIdentity)) return new HyperIdentity(drive)
+  if (!(this instanceof HyperIdentity)) return new HyperIdentity(drive, key)
 
   this._drive = drive
-  this._archive = this._drive.createArchive(key)
+  this._archive = this._drive.createArchive(key, {sparse: true})
   this.id = this._archive.id
   this.key = this._archive.key
   this.discoveryKey = this._archive.discoveryKey
@@ -20,7 +20,7 @@ HyperIdentity.prototype.setMeta = function (meta, cb) {
 }
 
 HyperIdentity.prototype.meta = function (cb) {
-  concat(this._archive.createFileReadStream('identity.json'), cb)
+  collect(this._archive.createFileReadStream('identity.json'), cb)
 }
 
 HyperIdentity.prototype.link = function (name, key, cb) {
