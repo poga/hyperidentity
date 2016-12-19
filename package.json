@@ -2,5 +2,10 @@
   "name": "hyperidentity",
   "version": "0.0.1",
   "main": "index.js",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "concat-stream": "^1.6.0",
+    "hyperdrive-ln": "^1.4.0",
+    "pump": "^1.0.1"
+  }
 }
