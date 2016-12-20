@@ -5,6 +5,7 @@ const hyperIdentity = require('..')
 const pump = require('pump')
 const Readable = require('stream').Readable
 const collect = require('collect-stream')
+const ln = require('hyperdrive-ln')
 
 tape('link', function (t) {
   var drive = hyperdrive(memdb())
@@ -39,7 +40,7 @@ tape('fork', function (t) {
 
         collect(id.createFileReadStream('links/linked-fork'), (err, data) => {
           t.error(err)
-          t.same(JSON.parse(data.toString()).l, key.toString('hex'))
+          t.same(ln.decode(data), key.toString('hex'))
           t.end()
         })
       })
