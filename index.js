@@ -47,62 +47,6 @@ HyperIdentity.prototype.readlink = function (name, cb) {
   return ln.readlink(this._archive, 'links/' + name, cb)
 }
 
-HyperIdentity.prototype.fork = function (name, newName, cb) {
-  var archive = this._archive
-  ln.readlink(archive, 'links/' + name, key => {
-    var source = this._drive.createArchive(key)
-    var fork = this._drive.createArchive()
-
-    // shamelessly copied from beaker
-    source.list((err, entries) => {
-      if (err) return cb(err)
-      var entriesDeDuped = {}
-      entries.forEach(entry => { entriesDeDuped[entry.name] = entry })
-      entries = Object.keys(entriesDeDuped).map(name => entriesDeDuped[name])
-
-      next()
-      function next (err) {
-        if (err) return cb(err)
-        var entry = entries.shift()
-        if (!entry) {
-          // done!
-          return done(fork.key)
-        }
-
-        // directories
-        if (entry.type === 'directory') {
-          return fork.append({
-            name: entry.name,
-            type: 'directory',
-            mtime: entry.mtime
-          }, next)
-        }
-
-        // skip other non-files, undownloaded files, and the old manifest
-        if (
-          entry.type !== 'file' ||
-          !source.isEntryDownloaded(entry)
-        ) {
-          return next()
-        }
-
-        // copy the file
-        pump(
-          source.createFileReadStream(entry),
-          fork.createFileWriteStream({ name: entry.name, mtime: entry.mtime, ctime: entry.ctime }),
-          next
-        )
-      }
-
-      function done (key) {
-        ln.link(archive, 'links/' + newName, key, err => {
-          cb(err, key)
-        })
-      }
-    })
-  })
-}
-
 HyperIdentity.prototype.replicate = function (opts) {
   return this._archive.replicate(opts)
 }

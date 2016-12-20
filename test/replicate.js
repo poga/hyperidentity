@@ -1,7 +1,7 @@
 const tape = require('tape')
 const hyperdrive = require('hyperdrive')
 const memdb = require('memdb')
-const swarm = require('hyperdrive-archive-swarm')
+const swarm = require('hyperdiscovery')
 const hyperIdentity = require('..')
 
 tape('swarm', function (t) {
