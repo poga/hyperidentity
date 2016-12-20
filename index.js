@@ -38,13 +38,18 @@ HyperIdentity.prototype.responseChallenge = function (name, nonce, email, cb) {
   })), this._archive.createFileWriteStream(`proofs/${name}`), cb)
 }
 
-// need to find a new name for this
+// TODO: find a better name for this
 HyperIdentity.prototype.link = function (name, key, cb) {
   ln.link(this._archive, 'links/' + name, key, cb)
 }
 
-HyperIdentity.prototype.fork = function (name, cb) {
-  ln.readlink(this._archive, 'links/' + name, key => {
+HyperIdentity.prototype.readlink = function (name, cb) {
+  return ln.readlink(this._archive, 'links/' + name, cb)
+}
+
+HyperIdentity.prototype.fork = function (name, newName, cb) {
+  var archive = this._archive
+  ln.readlink(archive, 'links/' + name, key => {
     var source = this._drive.createArchive(key)
     var fork = this._drive.createArchive()
 
@@ -61,7 +66,7 @@ HyperIdentity.prototype.fork = function (name, cb) {
         var entry = entries.shift()
         if (!entry) {
           // done!
-          return cb(null, fork.key)
+          return done(fork.key)
         }
 
         // directories
@@ -87,6 +92,12 @@ HyperIdentity.prototype.fork = function (name, cb) {
           fork.createFileWriteStream({ name: entry.name, mtime: entry.mtime, ctime: entry.ctime }),
           next
         )
+      }
+
+      function done (key) {
+        ln.link(archive, 'links/' + newName, key, err => {
+          cb(err, key)
+        })
       }
     })
   })
