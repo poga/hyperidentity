@@ -23,6 +23,13 @@ HyperIdentity.prototype.meta = function (cb) {
   collect(this._archive.createFileReadStream('identity.json'), cb)
 }
 
+HyperIdentity.prototype.responseChallenge = function (name, nonce, email, cb) {
+  pump(source(JSON.stringify({
+    nonce: nonce + 1,
+    email: email
+  })), this._archive.createFileWriteStream(`proofs/${name}`), cb)
+}
+
 HyperIdentity.prototype.link = function (name, key, cb) {
   ln.link(this._archive, 'links/' + name, key, cb)
 }
