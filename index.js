@@ -15,6 +15,14 @@ function HyperIdentity (drive, key) {
   this.discoveryKey = this._archive.discoveryKey
 }
 
+HyperIdentity.prototype.list = function (opts, cb) {
+  return this._archive.list(opts, cb)
+}
+
+HyperIdentity.prototype.createFileReadStream = function (entry, opts) {
+  return this._archive.createFileReadStream(entry, opts)
+}
+
 HyperIdentity.prototype.setMeta = function (meta, cb) {
   pump(source(JSON.stringify(meta)), this._archive.createFileWriteStream('identity.json'), cb)
 }
@@ -30,6 +38,7 @@ HyperIdentity.prototype.responseChallenge = function (name, nonce, email, cb) {
   })), this._archive.createFileWriteStream(`proofs/${name}`), cb)
 }
 
+// need to find a new name for this
 HyperIdentity.prototype.link = function (name, key, cb) {
   ln.link(this._archive, 'links/' + name, key, cb)
 }
@@ -39,6 +48,7 @@ HyperIdentity.prototype.fork = function (name, cb) {
     var source = this._drive.createArchive(key)
     var fork = this._drive.createArchive()
 
+    // shamelessly copied from beaker
     source.list((err, entries) => {
       if (err) return cb(err)
       var entriesDeDuped = {}

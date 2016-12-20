@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "test": "tape test/*.js"
+  },
   "dependencies": {
     "collect-stream": "^1.2.1",
     "hyperdrive-ln": "^1.4.0",
