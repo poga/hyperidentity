@@ -1,11 +1,27 @@
 # Hyperidentity
 
-**Bring-Your-Own-Data** to the web
+Store and Prove yourself with [hyperdrive](https://github.com/mafintosh/hyperdrive) archive.
 
-[login.withdat.com](http://login.withdat.com)(currently 404) is an experiment about letting users create *identities* and login to services with them.
+## Synopsis
 
-An identity is a dat archive containing data he/she want to share with that service. If the service want to store data, just create a dat archive and let user [link](https://github.com/poga/hyperdrive-ln) it to its identity archive.
+```js
+var hyperidentity = require('hyperidentity')
 
-Services can setup its own public peer to make user's data accessable when the user is offline.
+var me = hyperidentity(drive)
 
-We're going to provide a menubar app like 1password and allow one-click login with it.
+// verify yourself to a service:
+// service will give you a challenge for you to response
+me.responseChallenge(serviceName, nonce, email, cb)
+
+// save your metadata
+me.setMeta(meta, cb)
+me.getMeta(cb)
+
+// services will store the data you created on their side in another archive
+// link that archive to your identity
+me.link(archiveName, key, cb)
+```
+
+## License
+
+The MIT License
