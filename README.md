@@ -2,7 +2,7 @@
 
 [![NPM Version](https://img.shields.io/npm/v/hyperidentity.svg)](https://www.npmjs.com/package/hyperfeed) [![JavaScript Style Guide](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 
-Store and Prove yourself with [hyperdrive](https://github.com/mafintosh/hyperdrive) archive.
+Store and prove yourself with a [hyperdrive](https://github.com/mafintosh/hyperdrive) archive.
 
 ## Synopsis
 
