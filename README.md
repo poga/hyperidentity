@@ -4,6 +4,8 @@
 
 Store and prove yourself with a [hyperdrive](https://github.com/mafintosh/hyperdrive) archive.
 
+`npm i hyperidentity`
+
 ## Synopsis
 
 ```js
