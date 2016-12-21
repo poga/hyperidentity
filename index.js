@@ -27,7 +27,7 @@ HyperIdentity.prototype.setMeta = function (meta, cb) {
   pump(source(JSON.stringify(meta)), this._archive.createFileWriteStream('identity.json'), cb)
 }
 
-HyperIdentity.prototype.meta = function (cb) {
+HyperIdentity.prototype.getMeta = function (cb) {
   collect(this._archive.createFileReadStream('identity.json'), cb)
 }
 

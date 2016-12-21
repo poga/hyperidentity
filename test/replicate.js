@@ -14,7 +14,7 @@ tape('swarm', function (t) {
     var drive2 = hyperdrive(memdb())
     var id2 = hyperIdentity(drive2, id1.key)
     var sw2 = swarm(id2)
-    id2.meta((err, meta) => {
+    id2.getMeta((err, meta) => {
       t.error(err)
       t.same(JSON.parse(meta), {foo: 'bar'})
       sw1.close()

@@ -10,7 +10,7 @@ tape('basic', function (t) {
   id.setMeta({foo: 'bar'}, err => {
     t.error(err)
 
-    id.meta((err, meta) => {
+    id.getMeta((err, meta) => {
       t.error(err)
       t.same(JSON.parse(meta), {foo: 'bar'})
       t.end()
