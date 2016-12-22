@@ -16,17 +16,19 @@ function msg (sender, receiver, payload) {
   }
 }
 
-function verifyMsg (sender, receiver, msg) {
+function openMsg (sender, receiver, msg) {
   var sharedKey = encryption.scalarMultiplication(ed2curve.convertSecretKey(receiver.secretKey), ed2curve.convertPublicKey(sender.publicKey))
   var decrypted = encryption.decrypt(msg.payload, msg.nonce, sharedKey)
-  if (!decrypted) return false
+  if (!decrypted) return null
 
   decrypted = JSON.parse(decrypted)
 
-  return signatures.verify(Buffer(decrypted.payload), Buffer.from(decrypted.sig, 'hex'), sender.publicKey)
+  if (!signatures.verify(Buffer(decrypted.payload), Buffer.from(decrypted.sig, 'hex'), sender.publicKey)) return null
+
+  return decrypted.payload
 }
 
-module.exports = {msg, verifyMsg}
+module.exports = {msg, openMsg}
 
 function signed (sig, payload) {
   return JSON.stringify({sig: sig.toString('hex'), payload: payload.toString()})
