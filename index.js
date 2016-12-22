@@ -2,6 +2,8 @@ const Readable = require('stream').Readable
 const pump = require('pump')
 const collect = require('collect-stream')
 const ln = require('hyperdrive-ln')
+const proof = require('./proof')
+const bufferJSON = require('buffer-json')
 
 module.exports = HyperIdentity
 
@@ -31,11 +33,55 @@ HyperIdentity.prototype.getMeta = function (cb) {
   collect(this._archive.createFileReadStream('identity.json'), cb)
 }
 
-HyperIdentity.prototype.responseChallenge = function (name, nonce, email, cb) {
-  pump(source(JSON.stringify({
-    nonce: nonce + 1,
-    email: email
-  })), this._archive.createFileWriteStream(`proofs/${name}`), cb)
+HyperIdentity.prototype.serviceLinkToken = function (service, archiveKey) {
+  var payload = proof.msg(service, {publicKey: this._archive.key}, archiveKey)
+
+  return JSON.stringify({
+    service: service.publicKey,
+    payload: payload
+  }, bufferJSON.replacer)
+}
+
+HyperIdentity.prototype.acceptLinkToken = function (token, cb) {
+  var archive = this._archive
+  token = JSON.parse(token, bufferJSON.reviver)
+  var secretKey = this._archive.metadata.secretKey
+  var link = proof.openMsg({publicKey: token.service}, {secretKey}, token.payload)
+
+  if (!link) return cb(new Error('unable to read token'))
+
+  var resp = JSON.stringify(createResponse(
+    { publicKey: token.service }, // service
+    { secretKey: archive.metadata.secretKey } // self
+  ), bufferJSON.replacer)
+
+  pump(source(resp), archive.createFileWriteStream(proofPath(token.service)), err => {
+    if (err) return cb(err)
+
+    ln.link(archive, linkPath(token.service), link, cb)
+  })
+
+  function createResponse (service, self) {
+    return proof.msg(self, service, 'APPROVED')
+  }
+}
+
+HyperIdentity.prototype.verifyAcceptingness = function (service, cb) {
+  var archive = this._archive
+  archive.list((err, entries) => {
+    if (err) return cb(err)
+
+    for (var i = 0; i < entries.length; i++) {
+      if (entries[i].name === proofPath(service.publicKey)) {
+        collect(archive.createFileReadStream(proofPath(service.publicKey)), (err, data) => {
+          if (err) return cb(err)
+          cb(null, proof.openMsg({publicKey: archive.key}, {secretKey: service.secretKey}, JSON.parse(data, bufferJSON.reviver)))
+        })
+
+        break
+      }
+    }
+  })
 }
 
 // TODO: find a better name for this
@@ -56,4 +102,12 @@ function source (str) {
   s.push(str)
   s.push(null)
   return s
+}
+
+function proofPath (key) {
+  return `proofs/${key.toString('hex')}`
+}
+
+function linkPath (key) {
+  return `links/${key.toString('hex')}`
 }
