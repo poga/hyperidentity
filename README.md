@@ -26,19 +26,13 @@ var linkToken = ID.serviceLinkToken(service, '<ARCHIVE_KEY>')
 ID.acceptLinkToken(linkToken, err => {
   t.error(err)
 
-  // check response is written to the ID archive
-  collect(ID.createFileReadStream(`proofs/${service.publicKey.toString('hex')}`), (err, data) => {
+  // 5. service watch the archive list, find the proof, verify it
+  ID.verifyAcceptingness(service, (err, verified) => {
     t.error(err)
-    t.ok(data)
+    t.ok(verified)
 
-    // 5. service watch the archive list, find the proof, verify it
-    ID.verifyAcceptingness(service, (err, verified) => {
-      t.error(err)
-      t.ok(verified)
-
-      // 6. and it's done!
-      t.end()
-    })
+    // 6. and it's done!
+    t.end()
   })
 })
 ```
