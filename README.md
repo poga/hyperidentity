@@ -11,10 +11,12 @@ Represent yourself with a [hyperdrive](https://github.com/mafintosh/hyperdrive) 
 ```js
 var drive = hyperdrive(memdb())
 
-// user's ID
+// create a new user
 var ID = hyperidentity(drive)
 // a service is a ed25519 key pair()
 var service = signatures.keyPair()
+
+// now user want to signup to the service:
 
 // 1. user provide its ID's public key to service
 //    so service can create the same ID object with hyperidentity(drive, key)
