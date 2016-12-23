@@ -11,8 +11,9 @@ Represent yourself with a [hyperdrive](https://github.com/mafintosh/hyperdrive) 
 ```js
 var drive = hyperdrive(memdb())
 
-// assume
+// user's ID
 var ID = hyperidentity(drive)
+// a service is a ed25519 key pair()
 var service = signatures.keyPair()
 
 // 1. user provide its ID's public key to service
@@ -24,15 +25,12 @@ var linkToken = ID.serviceLinkToken(service, '<ARCHIVE_KEY>')
 // 4. user received the token, pass it to its ID,
 //    ID should verify the token and write a response to its archive
 ID.acceptLinkToken(linkToken, err => {
-  t.error(err)
 
   // 5. service watch the archive list, find the proof, verify it
   ID.verifyAcceptingness(service, (err, verified) => {
-    t.error(err)
-    t.ok(verified)
+    // if everything ok, verified === true
 
     // 6. and it's done!
-    t.end()
   })
 })
 ```
