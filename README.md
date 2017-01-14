@@ -9,11 +9,17 @@ Represent yourself with a [hyperdrive](https://github.com/mafintosh/hyperdrive) 
 ## Signup Flow
 
 ```js
+const hyperdrive = require('hyperdrive')
+const memdb = require('memdb')
+const hyperidentity = require('hyperidentity')
+const signatures = require('sodium-signatures')
+
+// create a new hyperdrive
 var drive = hyperdrive(memdb())
 
-// create a new user
+// create a new user on hyperdrive
 var ID = hyperidentity(drive)
-// a service is a ed25519 key pair()
+// create a new service. a service is an ed25519 key pair
 var service = signatures.keyPair()
 
 // now user want to signup to the service:
