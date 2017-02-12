@@ -1,6 +1,6 @@
 # Hyperidentity
 
-[![NPM Version](https://img.shields.io/npm/v/hyperidentity.svg)](https://www.npmjs.com/package/hyperfeed) [![JavaScript Style Guide](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
+[![NPM Version](https://img.shields.io/npm/v/hyperidentity.svg)](https://www.npmjs.com/package/hyperfeed) [![JavaScript Style Guide](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/) ![stability-experimental](https://img.shields.io/badge/stability-experimental-orange.svg?style=flat-square)
 
 Represent yourself with a [hyperdrive](https://github.com/mafintosh/hyperdrive) archive.
 
