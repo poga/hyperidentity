@@ -80,6 +80,8 @@ HyperIdentity.prototype.verifyAcceptingness = function (service, cb) {
         break
       }
     }
+
+    cb(null) // no error, but not verified
   })
 }
 
