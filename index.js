@@ -70,6 +70,7 @@ HyperIdentity.prototype.verifyAcceptingness = function (service, cb) {
   archive.list((err, entries) => {
     if (err) return cb(err)
 
+    var found = false
     for (var i = 0; i < entries.length; i++) {
       if (entries[i].name === proofPath(service.publicKey)) {
         collect(archive.createFileReadStream(proofPath(service.publicKey)), (err, data) => {
@@ -77,11 +78,12 @@ HyperIdentity.prototype.verifyAcceptingness = function (service, cb) {
           cb(null, proof.openMsg({publicKey: archive.key}, {secretKey: service.secretKey}, JSON.parse(data, bufferJSON.reviver)))
         })
 
+        found = true
         break
       }
     }
 
-    cb(null) // no error, but not verified
+    if (!found) cb(null) // no error, but not verified
   })
 }
 
