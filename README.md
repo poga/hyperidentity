@@ -6,7 +6,23 @@ Represent yourself with a [hyperdrive](https://github.com/mafintosh/hyperdrive) 
 
 `npm i hyperidentity`
 
-## Signup Flow
+## Usage
+
+create an identity
+
+```
+$ hi init path_to_my_new_identity
+56d0a72488190d37aaa28447a5600eafe67df00bf89ab646def449c17e331a56 // your identity key
+
+$ hi info path_to_my_idenitiy
+56d0a72488190d37aaa28447a5600eafe67df00bf89ab646def449c17e331a56 // your identity key
+
+$ hi login path_to_my_identity token
+```
+
+## API
+
+### Signup with API
 
 ```js
 const hyperdrive = require('hyperdrive')
@@ -42,8 +58,6 @@ ID.acceptLinkToken(linkToken, err => {
   })
 })
 ```
-
-## API
 
 #### `id = hyperidentity(archive)`
 
