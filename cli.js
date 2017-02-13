@@ -10,8 +10,6 @@ var argv = require('minimist')(process.argv.slice(2))
 
 var cmd = argv._.shift()
 
-console.log(argv)
-
 switch (cmd) {
   case 'init':
     var dir = argv._[0]
@@ -71,7 +69,7 @@ function info (dir, cb) {
   openArchive(dir, function (err, archive) {
     if (err) return cb(err)
 
-    console.log('key', archive.key.toString('hex'))
+    console.log(archive.key.toString('hex'))
     cb(null, archive)
   })
 }
