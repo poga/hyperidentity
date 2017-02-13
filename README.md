@@ -22,7 +22,7 @@ $ hi login path_to_my_identity token
 
 ## API
 
-### Signup with API
+### Sign Up with API
 
 ```js
 const hyperdrive = require('hyperdrive')
@@ -34,7 +34,7 @@ const signatures = require('sodium-signatures')
 var drive = hyperdrive(memdb())
 
 // create a new user on hyperdrive
-var ID = hyperidentity(drive)
+var ID = hyperidentity(archive)
 // create a new service. a service is an ed25519 key pair
 var service = signatures.keyPair()
 
@@ -44,7 +44,7 @@ var service = signatures.keyPair()
 //    so service can create the same ID object with hyperidentity(drive, key)
 // 2. service create a new archive to store user's data
 // 3. service create a link request token for the user, send to user
-var linkToken = ID.serviceLinkToken(service, '<ARCHIVE_KEY>')
+var linkToken = ID.serviceLinkToken(service, '<SERVICE_ARCHIVE_KEY>')
 
 // 4. user received the token, pass it to its ID,
 //    ID should verify the token and write a response to its archive
