@@ -27,6 +27,8 @@
     "sodium-signatures": "^1.4.1"
   },
   "devDependencies": {
+    "body-parser": "^1.16.1",
+    "express": "^4.14.1",
     "hyperdiscovery": "^1.1.0",
     "hyperdrive": "^7.12.1",
     "memdb": "^1.3.1",

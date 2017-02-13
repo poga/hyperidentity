@@ -4,6 +4,7 @@ const hyperidentity = require('.')
 const raf = require('random-access-file')
 const path = require('path')
 const mkdirp = require('mkdirp')
+const swarm = require('hyperdiscovery')
 
 var argv = require('minimist')(process.argv.slice(2))
 
@@ -32,9 +33,23 @@ switch (cmd) {
     login(argv._[0], argv._[1], function (err) {
       if (err) throw err
     })
+    break
+  case 'online':
+    online(argv._[0], function () {
+
+    })
 }
 
 // commands
+
+function online (dir, cb) {
+  openArchive(dir, function (err, archive) {
+    if (err) throw err
+
+    var sw = swarm(archive)
+    cb(sw)
+  })
+}
 
 function init (dir, meta, cb) {
   var drive = getDrive(dir)
@@ -53,7 +68,7 @@ function init (dir, meta, cb) {
 }
 
 function info (dir, cb) {
-  openArchive(getDrive(dir), function (err, archive) {
+  openArchive(dir, function (err, archive) {
     if (err) return cb(err)
 
     console.log('key', archive.key.toString('hex'))
@@ -62,10 +77,11 @@ function info (dir, cb) {
 }
 
 function login (dir, token, cb) {
-  openArchive(getDrive(dir), function (err, archive) {
+  openArchive(dir, function (err, archive) {
     if (err) return cb(err)
     var id = hyperidentity(archive)
-    id.acceptLinkToken(token, cb)
+    var decoded = new Buffer(token, 'base64')
+    id.acceptLinkToken(decoded, cb)
   })
 }
 
@@ -75,7 +91,8 @@ function getDrive (dir) {
   return hyperdrive(level(path.join(dir, '.hyperidentity')))
 }
 
-function openArchive (drive, cb) {
+function openArchive (dir, cb) {
+  var drive = getDrive(dir)
   drive.core.list((err, keys) => {
     // assume 2 keys
     if (err) return cb(err)

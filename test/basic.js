@@ -3,7 +3,7 @@ const hyperdrive = require('hyperdrive')
 const memdb = require('memdb')
 const hyperIdentity = require('..')
 
-tape('basic', function (t) {
+tape('meta', function (t) {
   var drive = hyperdrive(memdb())
   var id = hyperIdentity(drive.createArchive())
   id.setMeta({foo: 'bar'}, err => {
