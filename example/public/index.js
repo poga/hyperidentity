@@ -19,8 +19,10 @@ $('#login').click(function (e) {
         type: 'POST'
       }).done(function (data) {
         console.log(data)
-        $('#user').text(JSON.stringify(data))
-        clearInterval(loop)
+        if (data.user) {
+          $('#user').text(JSON.stringify(data.user))
+          clearInterval(loop)
+        }
       }).fail(console.error)
     }, 10000)
   })

@@ -44,10 +44,12 @@ app.post('/verifyLogin', function (req, res) {
     console.log('verifyAcceptingness', err, msg)
     if (err) throw err
     if (msg) {
-      console.log(msg)
+      console.log('received', msg.toString())
+      console.log('get meta')
       ID.getMeta((err, meta) => {
         if (err) throw err
-        res.send(meta)
+        console.log(meta)
+        res.json({user: meta.toString()})
 
         sw.close()
       })
