@@ -8,7 +8,7 @@ const collect = require('collect-stream')
 tape('signup', function (t) {
   var drive = hyperdrive(memdb())
 
-  var ID = hyperidentity(drive)
+  var ID = hyperidentity(drive.createArchive())
   var service = signatures.keyPair()
 
   // 1. user provide its ID's public key to service

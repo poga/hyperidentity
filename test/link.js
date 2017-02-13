@@ -5,7 +5,7 @@ const hyperIdentity = require('..')
 
 tape('link', function (t) {
   var drive = hyperdrive(memdb())
-  var id = hyperIdentity(drive)
+  var id = hyperIdentity(drive.createArchive())
   id.link('linked', 'fakeKey', err => {
     t.error(err)
 

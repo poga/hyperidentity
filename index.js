@@ -7,11 +7,10 @@ const bufferJSON = require('buffer-json')
 
 module.exports = HyperIdentity
 
-function HyperIdentity (drive, key) {
-  if (!(this instanceof HyperIdentity)) return new HyperIdentity(drive, key)
+function HyperIdentity (archive) {
+  if (!(this instanceof HyperIdentity)) return new HyperIdentity(archive)
 
-  this._drive = drive
-  this._archive = this._drive.createArchive(key, {sparse: true})
+  this._archive = archive
   this.id = this._archive.id
   this.key = this._archive.key
   this.discoveryKey = this._archive.discoveryKey

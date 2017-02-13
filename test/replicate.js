@@ -6,13 +6,13 @@ const hyperIdentity = require('..')
 
 tape('swarm', function (t) {
   var drive = hyperdrive(memdb())
-  var id1 = hyperIdentity(drive)
+  var id1 = hyperIdentity(drive.createArchive())
   var sw1 = swarm(id1)
   id1.setMeta({foo: 'bar'}, err => {
     t.error(err)
 
     var drive2 = hyperdrive(memdb())
-    var id2 = hyperIdentity(drive2, id1.key)
+    var id2 = hyperIdentity(drive2.createArchive(id1.key))
     var sw2 = swarm(id2)
     id2.getMeta((err, meta) => {
       t.error(err)

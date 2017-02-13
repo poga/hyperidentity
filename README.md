@@ -45,7 +45,7 @@ ID.acceptLinkToken(linkToken, err => {
 
 ## API
 
-#### `id = hyperidentity(drive, [key])`
+#### `id = hyperidentity(archive)`
 
 Create a new identity
 
