@@ -7,6 +7,6 @@ tape('token', function (t) {
   var u2 = signatures.keyPair()
 
   var msg = proof.msg(u1, u2, 'KEY')
-  t.same(proof.openMsg(u1, u2, msg), 'KEY')
+  t.same(proof.openMsg(u1, u2, msg).toString(), 'KEY')
   t.end()
 })
