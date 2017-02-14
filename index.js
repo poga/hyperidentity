@@ -75,7 +75,8 @@ HyperIdentity.prototype.verifyAcceptingness = function (service, cb) {
       if (entries[i].name === proofPath(service.publicKey)) {
         collect(archive.createFileReadStream(proofPath(service.publicKey)), (err, data) => {
           if (err) return cb(err)
-          cb(null, proof.openMsg({publicKey: archive.key}, {secretKey: service.secretKey}, JSON.parse(data, bufferJSON.reviver)))
+          var msg = proof.openMsg({publicKey: archive.key}, {secretKey: service.secretKey}, JSON.parse(data, bufferJSON.reviver))
+          cb(null, msg.toString() === 'APPROVED')
         })
 
         found = true

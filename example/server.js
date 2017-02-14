@@ -40,11 +40,10 @@ app.post('/verifyLogin', function (req, res) {
     })
   })
 
-  ID.verifyAcceptingness(service, (err, msg) => {
-    console.log('verifyAcceptingness', err, msg)
+  ID.verifyAcceptingness(service, (err, ok) => {
+    console.log('verifyAcceptingness', err, ok)
     if (err) throw err
-    if (msg) {
-      console.log('received', msg.toString())
+    if (ok) {
       console.log('get meta')
       ID.getMeta((err, meta) => {
         if (err) throw err
