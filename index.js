@@ -88,10 +88,6 @@ HyperIdentity.prototype.verifyAcceptingness = function (service, cb) {
   })
 }
 
-HyperIdentity.prototype.replicate = function (opts) {
-  return this._archive.replicate(opts)
-}
-
 function source (str) {
   var s = new Readable()
   s.push(str)
