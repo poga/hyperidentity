@@ -88,15 +88,6 @@ HyperIdentity.prototype.verifyAcceptingness = function (service, cb) {
   })
 }
 
-// TODO: find a better name for this
-HyperIdentity.prototype.link = function (name, key, cb) {
-  ln.link(this._archive, 'links/' + name, key, cb)
-}
-
-HyperIdentity.prototype.readlink = function (name, cb) {
-  return ln.readlink(this._archive, 'links/' + name, cb)
-}
-
 HyperIdentity.prototype.replicate = function (opts) {
   return this._archive.replicate(opts)
 }
