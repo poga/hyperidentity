@@ -2,7 +2,7 @@ const Readable = require('stream').Readable
 const pump = require('pump')
 const collect = require('collect-stream')
 const ln = require('hyperdrive-ln')
-const proof = require('./proof')
+const encrypted = require('encrypted-message')
 const bufferJSON = require('buffer-json')
 
 module.exports = HyperIdentity
@@ -33,7 +33,7 @@ HyperIdentity.prototype.getMeta = function (cb) {
 }
 
 HyperIdentity.prototype.serviceLinkToken = function (service, archiveKey) {
-  var payload = proof.msg(service, {publicKey: this._archive.key}, archiveKey)
+  var payload = encrypted.message(service, {publicKey: this._archive.key}, archiveKey)
 
   return JSON.stringify({
     service: service.publicKey,
@@ -45,7 +45,7 @@ HyperIdentity.prototype.acceptLinkToken = function (token, cb) {
   var archive = this._archive
   token = JSON.parse(token, bufferJSON.reviver)
   var secretKey = this._archive.metadata.secretKey
-  var link = proof.openMsg({publicKey: token.service}, {secretKey}, token.payload)
+  var link = encrypted.openMessage({publicKey: token.service}, {secretKey}, token.payload)
 
   if (!link) return cb(new Error('unable to read token'))
 
@@ -61,7 +61,7 @@ HyperIdentity.prototype.acceptLinkToken = function (token, cb) {
   })
 
   function createResponse (service, self) {
-    return proof.msg(self, service, 'APPROVED')
+    return encrypted.message(self, service, 'APPROVED')
   }
 }
 
@@ -75,7 +75,7 @@ HyperIdentity.prototype.verifyAcceptingness = function (service, cb) {
       if (entries[i].name === proofPath(service.publicKey)) {
         collect(archive.createFileReadStream(proofPath(service.publicKey)), (err, data) => {
           if (err) return cb(err)
-          var msg = proof.openMsg({publicKey: archive.key}, {secretKey: service.secretKey}, JSON.parse(data, bufferJSON.reviver))
+          var msg = encrypted.openMessage({publicKey: archive.key}, {secretKey: service.secretKey}, JSON.parse(data, bufferJSON.reviver))
           cb(null, msg.toString() === 'APPROVED')
         })
 

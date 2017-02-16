@@ -14,6 +14,7 @@
     "buffer-json": "^1.0.0",
     "collect-stream": "^1.2.1",
     "ed2curve": "^0.2.1",
+    "encrypted-message": "^1.0.2",
     "hyperdrive": "^7.14.2",
     "hyperdrive-ln": "^3.3.0",
     "json-buffer": "^2.0.11",
