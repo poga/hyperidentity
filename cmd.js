@@ -4,8 +4,6 @@ const hyperidentity = require('.')
 const raf = require('random-access-file')
 const path = require('path')
 const swarm = require('hyperdiscovery')
-const ln = require('hyperdrive-ln')
-const memdb = require('memdb')
 
 function up (dir, cb) {
   openArchive(dir, function (err, archive) {
@@ -51,7 +49,6 @@ function login (dir, token, cb) {
     })
   })
 }
-
 
 module.exports = {init, up, info, login}
 
