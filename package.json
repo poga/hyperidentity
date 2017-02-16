@@ -10,9 +10,7 @@
   "scripts": {
     "test": "tape test/*.js"
   },
-  "repository": {
-    "poga/hyperidentity"
-  },
+  "repository": "poga/hyperidentity",
   "dependencies": {
     "buffer-json": "^1.0.0",
     "collect-stream": "^1.2.1",
