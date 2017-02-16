@@ -3,49 +3,15 @@ const level = require('level')
 const hyperidentity = require('.')
 const raf = require('random-access-file')
 const path = require('path')
-const mkdirp = require('mkdirp')
 const swarm = require('hyperdiscovery')
+const ln = require('hyperdrive-ln')
+const memdb = require('memdb')
 
-var argv = require('minimist')(process.argv.slice(2))
-
-var cmd = argv._.shift()
-
-switch (cmd) {
-  case 'init':
-    var dir = argv._[0]
-    mkdirp(dir, function (err) {
-      if (err) throw err
-      init(dir, {foo: 'bar'}, function (err, id, archive) {
-        if (err) throw (err)
-
-        console.log(id.key.toString('hex'))
-      })
-    })
-    break
-  case 'info':
-    info(argv._[0], function (err, archive) {
-      if (err) throw err
-    })
-    break
-  case 'login':
-    login(argv._[0], argv._[1], function (err) {
-      if (err) throw err
-    })
-    break
-  case 'online':
-    online(argv._[0], function () {
-
-    })
-}
-
-// commands
-
-function online (dir, cb) {
+function up (dir, cb) {
   openArchive(dir, function (err, archive) {
-    if (err) throw err
+    if (err) cb(err)
 
-    var sw = swarm(archive)
-    cb(sw)
+    cb(null, swarm(archive))
   })
 }
 
@@ -69,7 +35,6 @@ function info (dir, cb) {
   openArchive(dir, function (err, archive) {
     if (err) return cb(err)
 
-    console.log(archive.key.toString('hex'))
     cb(null, archive)
   })
 }
@@ -79,9 +44,16 @@ function login (dir, token, cb) {
     if (err) return cb(err)
     var id = hyperidentity(archive)
     var decoded = new Buffer(token, 'base64')
-    id.acceptLinkToken(decoded, cb)
+    id.acceptLinkToken(decoded, err => {
+      if (err) return cb(err)
+
+      cb(null, archive)
+    })
   })
 }
+
+
+module.exports = {init, up, info, login}
 
 // helpers
 
