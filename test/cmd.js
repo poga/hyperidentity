@@ -13,6 +13,11 @@ tape('init', function (t) {
     t.error(err)
     t.ok(id)
     t.ok(archive)
+
+    collect(archive.createFileReadStream('identity.json'), (err, data) => {
+      t.error(err)
+      t.same(JSON.parse(data), {foo: 'bar'})
+    })
     t.end()
   })
 })
