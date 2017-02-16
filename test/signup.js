@@ -22,7 +22,7 @@ tape('signup', function (t) {
     t.error(err)
 
     // check response is written to the ID archive
-    collect(ID.createFileReadStream(`proofs/${service.publicKey.toString('hex')}`), (err, data) => {
+    collect(ID.archive.createFileReadStream(`proofs/${service.publicKey.toString('hex')}`), (err, data) => {
       t.error(err)
       t.ok(data)
 

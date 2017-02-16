@@ -63,13 +63,9 @@ ID.acceptLinkToken(linkToken, err => {
 
 Create a new identity
 
-#### `stream = id.list(opts, [cb])`
+#### `id.archive`
 
-list entries in the ID
-
-#### `stream = id.createFileReadStream(entry, [opts])`
-
-read a entry
+The [hyperdrive](https://github.com/mafintosh/hyperdrive) archive used by this ID.
 
 #### `id.setMeta(meta, cb)`
 

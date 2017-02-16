@@ -10,30 +10,19 @@ module.exports = HyperIdentity
 function HyperIdentity (archive) {
   if (!(this instanceof HyperIdentity)) return new HyperIdentity(archive)
 
-  this._archive = archive
-  this.id = this._archive.id
-  this.key = this._archive.key
-  this.discoveryKey = this._archive.discoveryKey
-}
-
-HyperIdentity.prototype.list = function (opts, cb) {
-  return this._archive.list(opts, cb)
-}
-
-HyperIdentity.prototype.createFileReadStream = function (entry, opts) {
-  return this._archive.createFileReadStream(entry, opts)
+  this.archive = archive
 }
 
 HyperIdentity.prototype.setMeta = function (meta, cb) {
-  pump(source(JSON.stringify(meta)), this._archive.createFileWriteStream('identity.json'), cb)
+  pump(source(JSON.stringify(meta)), this.archive.createFileWriteStream('identity.json'), cb)
 }
 
 HyperIdentity.prototype.getMeta = function (cb) {
-  collect(this._archive.createFileReadStream('identity.json'), cb)
+  collect(this.archive.createFileReadStream('identity.json'), cb)
 }
 
 HyperIdentity.prototype.serviceLinkToken = function (service, archiveKey) {
-  var payload = encrypted.message(service, {publicKey: this._archive.key}, archiveKey)
+  var payload = encrypted.message(service, {publicKey: this.archive.key}, archiveKey)
 
   return JSON.stringify({
     service: service.publicKey,
@@ -42,9 +31,9 @@ HyperIdentity.prototype.serviceLinkToken = function (service, archiveKey) {
 }
 
 HyperIdentity.prototype.acceptLinkToken = function (token, cb) {
-  var archive = this._archive
+  var archive = this.archive
   token = JSON.parse(token, bufferJSON.reviver)
-  var secretKey = this._archive.metadata.secretKey
+  var secretKey = this.archive.metadata.secretKey
   var link = encrypted.openMessage({publicKey: token.service}, {secretKey}, token.payload)
 
   if (!link) return cb(new Error('unable to read token'))
@@ -66,7 +55,7 @@ HyperIdentity.prototype.acceptLinkToken = function (token, cb) {
 }
 
 HyperIdentity.prototype.verifyAcceptingness = function (service, cb) {
-  var archive = this._archive
+  var archive = this.archive
   archive.list((err, entries) => {
     if (err) return cb(err)
 
