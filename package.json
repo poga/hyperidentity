@@ -5,7 +5,7 @@
   "main": "index.js",
   "license": "MIT",
   "bin": {
-    "hi": "./cli.js"
+    "hi": "./bin/hi.js"
   },
   "scripts": {
     "test": "tape test/*.js"

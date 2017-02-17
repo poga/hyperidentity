@@ -1,21 +1,17 @@
-const hyperdrive = require('hyperdrive')
-const level = require('level')
 const hyperidentity = require('.')
 const raf = require('random-access-file')
 const path = require('path')
 const swarm = require('hyperdiscovery')
 const importFiles = require('hyperdrive-import-files')
+const hyperdrive = require('hyperdrive')
+const level = require('level')
 
-function up (dir, cb) {
-  openArchive(dir, function (err, archive) {
-    if (err) cb(err)
-
-    cb(null, swarm(archive))
-  })
+function up (archive) {
+  return swarm(archive)
 }
 
 function init (dir, meta, cb) {
-  var drive = getDrive(dir)
+  var drive = hyperdrive(level(path.join(dir, '.hyperidentity')))
   var archive = drive.createArchive({
     file: name => raf(path.join(dir, name))
   })
@@ -27,12 +23,8 @@ function init (dir, meta, cb) {
     console.log('done')
     if (err) cb(err)
 
-    var status = importFiles(archive, dir, {ignore: [path => path.indexOf('.hyperidentity') !== -1], index: true}, err => {
-      cb(err, id, archive)
-    })
-    status.on('error', err => { throw err })
-    status.on('file imported', function (s) {
-      console.log('file imported %s %s', s.path, s.mode)
+    var importStatus = importFiles(archive, dir, {ignore: [path => path.indexOf('.hyperidentity') !== -1], index: true}, err => {
+      cb(err, id, archive, importStatus)
     })
   }
 }
@@ -52,52 +44,3 @@ function login (archive, token, cb) {
 }
 
 module.exports = {init, up, info, login}
-
-// helpers
-
-function getDrive (dir) {
-  return hyperdrive(level(path.join(dir, '.hyperidentity')))
-}
-
-function openArchive (dir, cb) {
-  var drive = getDrive(dir)
-  drive.core.list((err, keys) => {
-    // assume 2 keys
-    if (err) return cb(err)
-
-    var archive
-    firstTry()
-
-    function firstTry () {
-      archive = drive.createArchive(keys[1], {
-        file: name => raf(path.join(dir, name))
-      })
-      var openTimeout = setTimeout(secondTry, 150)
-
-      archive.open(function (err) {
-        clearTimeout(openTimeout)
-
-        if (!err) return doneCreateArchive()
-        var badKey = err && (err.message.indexOf('Unknown message type') > -1 || err.message.indexOf('Key not found in database') > -1)
-        if (err && !badKey) return cb(err)
-
-        secondTry()
-      })
-    }
-
-    function secondTry () {
-      archive = drive.createArchive(keys[0], {
-        file: name => raf(path.join(dir, name))
-      })
-      doneCreateArchive()
-    }
-
-    function doneCreateArchive () {
-      archive.open(function (err) {
-        if (err) return cb(err)
-
-        cb(null, archive)
-      })
-    }
-  })
-}
