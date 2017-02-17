@@ -1,28 +1,35 @@
-# Hyperidentity
+# hyperidentity
 
-[![NPM Version](https://img.shields.io/npm/v/hyperidentity.svg)](https://www.npmjs.com/package/hyperidentity) [![JavaScript Style Guide](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/) ![stability-experimental](https://img.shields.io/badge/stability-experimental-orange.svg?style=flat-square)
+![stability-experimental](https://img.shields.io/badge/stability-experimental-orange.svg?style=flat-square)
+[![NPM Version](https://img.shields.io/npm/v/hyperidentity.svg)](https://www.npmjs.com/package/hyperidentity)
+[![JavaScript Style Guide](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 
-Represent yourself with a [hyperdrive](https://github.com/mafintosh/hyperdrive) archive.
+A decentralized authentication and data-sharing protocol. Hyperidentity allows you to
 
-`npm i hyperidentity`
+* **Own your data**:  Provide your data to a web services but still controll what you've shared.
+* **Avoid vendor lock-in**: Move your data between services.
+* **No single-point-of-failure**: Every service can have a up-to-date copy of your data. There won't be a single service depended by all other services. Think github and all other Code Review/Deploy/Project Management tools.
+
+`npm i -g hyperidentity`
 
 ## Usage
 
-create an identity
+Create an identity:
 
 ```
 $ hi init path_to_my_new_identity
 56d0a72488190d37aaa28447a5600eafe67df00bf89ab646def449c17e331a56 // your identity key
+```
 
-$ hi info path_to_my_idenitiy
-56d0a72488190d37aaa28447a5600eafe67df00bf89ab646def449c17e331a56 // your identity key
+Login to a service:
 
+```
 $ hi login path_to_my_identity token
 ```
 
 ## API
 
-### Sign Up with API
+### Sign up flow
 
 ```js
 const hyperdrive = require('hyperdrive')
@@ -61,11 +68,11 @@ ID.acceptLinkToken(linkToken, err => {
 
 #### `id = hyperidentity(archive)`
 
-Create a new identity
+Create a new identity with a [hyperdrive](https://github.com/mafintosh/hyperdrive) archive.
 
 #### `id.archive`
 
-The [hyperdrive](https://github.com/mafintosh/hyperdrive) archive used by this ID.
+The archive used by this ID.
 
 #### `id.setMeta(meta, cb)`
 
@@ -79,25 +86,25 @@ Get metadata of the ID
 
 #### `token = id.serviceLinkToken(service, archiveKey)`
 
-Service need to create a token for user to:
+Create a link token for `id` for the following purpose:
 
 1. verify user really own the ID(archive)
 2. give user a service-owned archive to [link](https://github.com/poga/hyperdrive-ln) to its ID.
 
-`service` is an object with two key: `{publicKey, secretKey}`. You must use `sodium-signatures` to create a keyPair: `signatures.keyPair()`
+`service` is an object with two key: `{publicKey, secretKey}`. You need to use `sodium-signatures` to create a keyPair: `signatures.keyPair()`
 
-returns a token string.
+Returns a token string.
 
 #### `id.acceptLinkToken(token, cb(err))`
 
-User need to accept the token to verify him/herself. This will:
+Accept a link token. Under the hood, this will:
 
-1. write a response to `proofs/${service.publicKey}`
-2. link `archiveKey` at `links/${service.publicKey}
+1. write a response to `.proofs/${service.publicKey}`
+2. link `archiveKey` at `.links/${service.publicKey}
 
 #### `id.verifyAcceptingness(service, cb(err, verified))`
 
-Then, service find files in the archive written in the previous step, verify it, and the sign-up is complete.
+Check whether `id` accepted the link token from `service`.
 
 ## License
 
