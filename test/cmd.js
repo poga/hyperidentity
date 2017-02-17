@@ -6,6 +6,8 @@ const hyperidentity = require('..')
 const hyperdrive = require('hyperdrive')
 const memdb = require('memdb')
 const collect = require('collect-stream')
+const fs = require('fs')
+const path = require('path')
 
 tape('init', function (t) {
   var dir = tmp.dirSync()
@@ -17,8 +19,25 @@ tape('init', function (t) {
     collect(archive.createFileReadStream('identity.json'), (err, data) => {
       t.error(err)
       t.same(JSON.parse(data), {foo: 'bar'})
+      t.end()
     })
-    t.end()
+  })
+})
+
+tape('init and import', function (t) {
+  var dir = tmp.dirSync()
+  fs.writeFileSync(path.join(dir.name, 'text.txt'), 'hello')
+
+  cmds.init(dir.name, {foo: 'bar'}, (err, id, archive) => {
+    t.error(err)
+    t.ok(id)
+    t.ok(archive)
+
+    collect(archive.createFileReadStream('text.txt'), (err, data) => {
+      t.error(err)
+      t.same(data.toString(), 'hello')
+      t.end()
+    })
   })
 })
 
@@ -27,15 +46,10 @@ tape('info', function (t) {
   cmds.init(dir.name, {foo: 'bar'}, (err, id, archive) => {
     t.error(err)
 
-    // close the leveldb used by the archive.
-    // in real world each command is in seperate process so we don't have to do this.
-    archive.drive.core._db.close(() => {
-      // then execute next command
-      cmds.info(dir.name, (err, archive) => {
-        t.error(err)
-        t.ok(archive)
-        t.end()
-      })
+    cmds.info(archive, (err, info) => {
+      t.error(err)
+      t.same(info.key, archive.key)
+      t.end()
     })
   })
 })
@@ -54,16 +68,14 @@ tape('login', function (t) {
     // token will be encoded as base64 to transmit across network
     token = new Buffer(token).toString('base64')
 
-    archive.drive.core._db.close(() => {
-      cmds.login(dir.name, token, (err, archive) => {
-        t.error(err)
+    cmds.login(archive, token, (err, archive) => {
+      t.error(err)
 
-        // check response is written into the ID archive
-        collect(archive.createFileReadStream(`proofs/${service.publicKey.toString('hex')}`), (err, data) => {
-          t.error(err)
-          t.ok(data)
-          t.end()
-        })
+      // check response is written into the ID archive
+      collect(archive.createFileReadStream(`proofs/${service.publicKey.toString('hex')}`), (err, data) => {
+        t.error(err)
+        t.ok(data)
+        t.end()
       })
     })
   })

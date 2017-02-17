@@ -4,6 +4,7 @@ const hyperidentity = require('.')
 const raf = require('random-access-file')
 const path = require('path')
 const swarm = require('hyperdiscovery')
+const importFiles = require('hyperdrive-import-files')
 
 function up (dir, cb) {
   openArchive(dir, function (err, archive) {
@@ -23,30 +24,30 @@ function init (dir, meta, cb) {
   id.setMeta(meta, done)
 
   function done (err) {
+    console.log('done')
     if (err) cb(err)
 
-    cb(null, id, archive)
+    var status = importFiles(archive, dir, {ignore: [path => path.indexOf('.hyperidentity') !== -1], index: true}, err => {
+      cb(err, id, archive)
+    })
+    status.on('error', err => { throw err })
+    status.on('file imported', function (s) {
+      console.log('file imported %s %s', s.path, s.mode)
+    })
   }
 }
 
-function info (dir, cb) {
-  openArchive(dir, function (err, archive) {
+function info (archive, cb) {
+  cb(null, {key: archive.key})
+}
+
+function login (archive, token, cb) {
+  var id = hyperidentity(archive)
+  var decoded = new Buffer(token, 'base64')
+  id.acceptLinkToken(decoded, err => {
     if (err) return cb(err)
 
     cb(null, archive)
-  })
-}
-
-function login (dir, token, cb) {
-  openArchive(dir, function (err, archive) {
-    if (err) return cb(err)
-    var id = hyperidentity(archive)
-    var decoded = new Buffer(token, 'base64')
-    id.acceptLinkToken(decoded, err => {
-      if (err) return cb(err)
-
-      cb(null, archive)
-    })
   })
 }
 
