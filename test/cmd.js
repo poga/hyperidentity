@@ -72,7 +72,7 @@ tape('login', function (t) {
       t.error(err)
 
       // check response is written into the ID archive
-      collect(archive.createFileReadStream(`proofs/${service.publicKey.toString('hex')}`), (err, data) => {
+      collect(archive.createFileReadStream(`.proofs/${service.publicKey.toString('hex')}`), (err, data) => {
         t.error(err)
         t.ok(data)
         t.end()

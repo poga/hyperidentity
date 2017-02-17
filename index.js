@@ -85,9 +85,9 @@ function source (str) {
 }
 
 function proofPath (key) {
-  return `proofs/${key.toString('hex')}`
+  return `.proofs/${key.toString('hex')}`
 }
 
 function linkPath (key) {
-  return `links/${key.toString('hex')}`
+  return `.links/${key.toString('hex')}`
 }
