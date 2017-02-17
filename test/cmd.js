@@ -110,7 +110,8 @@ tape('up', function (t) {
   }
 
   function doTest (drive, archive) {
-    cmds.up(drive, archive, {clone_path: path.join(dir.name, 'up_test')}, (err, conns) => {
+    var clonedTo = path.join(dir.name, 'up_test')
+    cmds.up(drive, archive, {clone_path: clonedTo}, (err, conns) => {
       t.error(err)
       t.equal(conns.length, 2)
       t.equal(conns[1].archive.key, archive.key)
@@ -119,7 +120,11 @@ tape('up', function (t) {
         t.error(err)
         t.equal(data.toString(), 'hello')
 
-        done(conns)
+        fs.stat(path.join(clonedTo, 'hello.txt'), (err, stat) => {
+          t.error(err)
+          t.ok(stat)
+          done(conns)
+        })
       })
     })
   }
