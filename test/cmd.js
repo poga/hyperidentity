@@ -8,6 +8,10 @@ const memdb = require('memdb')
 const collect = require('collect-stream')
 const fs = require('fs')
 const path = require('path')
+const pump = require('pump')
+const Readable = require('stream').Readable
+const ln = require('hyperdrive-ln')
+const swarm = require('hyperdiscovery')
 
 tape('init', function (t) {
   var dir = tmp.dirSync()
@@ -80,3 +84,59 @@ tape('login', function (t) {
     })
   })
 })
+
+tape('up', function (t) {
+  var dir = tmp.dirSync()
+  var service = signatures.keyPair()
+  var serviceArchive = hyperdrive(memdb()).createArchive()
+  var sw = swarm(serviceArchive)
+  pump(source('hello'), serviceArchive.createFileWriteStream('hello.txt'), err => {
+    t.error(err)
+
+    setup()
+  })
+
+  // setup an archive with a linked archive
+  function setup () {
+    cmds.init(dir.name, {foo: 'bar'}, (err, id, archive, _, drive) => {
+      t.error(err)
+
+      ln.link(archive, `.links/${service.publicKey.toString('hex')}`, serviceArchive.key, err => {
+        t.error(err)
+
+        doTest(drive, archive)
+      })
+    })
+  }
+
+  function doTest (drive, archive) {
+    cmds.up(drive, archive, {clone_path: path.join(dir.name, 'up_test')}, (err, conns) => {
+      t.error(err)
+      t.equal(conns.length, 2)
+      t.equal(conns[1].archive.key, archive.key)
+
+      collect(conns[0].archive.createFileReadStream('hello.txt'), (err, data) => {
+        t.error(err)
+        t.equal(data.toString(), 'hello')
+
+        done(conns)
+      })
+    })
+  }
+
+  function done (conns) {
+    cmds.down(conns, err => {
+      t.error(err)
+      sw.close(() => {
+        t.end()
+      })
+    })
+  }
+})
+
+function source (str) {
+  var s = new Readable()
+  s.push(str)
+  s.push(null)
+  return s
+}

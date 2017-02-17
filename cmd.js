@@ -5,9 +5,61 @@ const swarm = require('hyperdiscovery')
 const importFiles = require('hyperdrive-import-files')
 const hyperdrive = require('hyperdrive')
 const level = require('level')
+const ln = require('hyperdrive-ln')
+const async = require('async')
 
-function up (archive) {
-  return swarm(archive)
+const DEFAULT_CLONE_PATH = '~/.hyperidentity-linked'
+
+function up (drive, archive, opts, cb) {
+  if (cb === undefined) return up(archive, {}, cb)
+
+  var clonePath = opts.clone_path || DEFAULT_CLONE_PATH
+
+  var self = swarm(archive)
+
+  // also replicate all linked archives
+  archive.list((err, entries) => {
+    if (err) return cb(err)
+
+    var links = entries.filter(e => e.name.startsWith('.links'))
+
+    async.map(
+      links,
+      (entry, cb) => {
+        ln.readlink(archive, entry.name, cb)
+      },
+      (err, keys) => {
+        if (err) return cb(err)
+
+        var conns = keys.reduce((result, key) => { return result.concat([clone(key)]) }, [])
+        // push self
+        conns.push({archive, sw: self})
+
+        cb(null, conns)
+      }
+    )
+  })
+
+  function clone (key) {
+    var archive = drive.createArchive(key, { file: name => raf(path.join(clonePath, name)) })
+    var sw = swarm(archive)
+
+    return {archive, sw}
+  }
+}
+
+// close all swarm connection in a `up` result.
+// only needed for testing.
+function down (conns, cb) {
+  async.each(conns, close, err => {
+    if (err) return cb(err)
+
+    cb()
+  })
+
+  function close (r, cb) {
+    r.sw.close(cb)
+  }
 }
 
 function init (dir, meta, cb) {
@@ -20,11 +72,10 @@ function init (dir, meta, cb) {
   id.setMeta(meta, done)
 
   function done (err) {
-    console.log('done')
     if (err) cb(err)
 
     var importStatus = importFiles(archive, dir, {ignore: [path => path.indexOf('.hyperidentity') !== -1], index: true}, err => {
-      cb(err, id, archive, importStatus)
+      cb(err, id, archive, importStatus, drive)
     })
   }
 }
@@ -33,9 +84,9 @@ function info (archive, cb) {
   cb(null, {key: archive.key})
 }
 
-function login (archive, token, cb) {
+function login (archive, encodedToken, cb) {
   var id = hyperidentity(archive)
-  var decoded = new Buffer(token, 'base64')
+  var decoded = new Buffer(encodedToken, 'base64')
   id.acceptLinkToken(decoded, err => {
     if (err) return cb(err)
 
@@ -43,4 +94,4 @@ function login (archive, token, cb) {
   })
 }
 
-module.exports = {init, up, info, login}
+module.exports = {init, up, down, info, login}
