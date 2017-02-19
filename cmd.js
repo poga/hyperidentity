@@ -11,7 +11,7 @@ const async = require('async')
 const DEFAULT_CLONE_PATH = '~/.hyperidentity-linked'
 
 function up (drive, archive, opts, cb) {
-  if (cb === undefined) return up(archive, {}, cb)
+  if (cb === undefined) return up(drive, archive, {}, opts)
 
   var clonePath = opts.clone_path || DEFAULT_CLONE_PATH
 

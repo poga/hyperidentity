@@ -13,13 +13,14 @@ function doCommand (cmd) {
   var dir = argv._[0]
   if (cmd === 'init') return doInit(dir)
 
-  openArchive(dir, function (err, archive) {
+  openArchive(dir, function (err, archive, drive) {
     if (err) throw err
 
     switch (cmd) {
       case 'info':
         cmds.info(archive, function (err, archive) {
           if (err) throw err
+          console.log(archive.key.toString('hex'))
         })
         break
       case 'login':
@@ -28,7 +29,10 @@ function doCommand (cmd) {
         })
         break
       case 'online':
-        cmds.up(archive)
+        cmds.up(drive, archive, (err, conns) => {
+          if (err) throw err
+          console.log('online')
+        })
         break
     }
   })
@@ -86,7 +90,7 @@ function openArchive (dir, cb) {
       archive.open(function (err) {
         if (err) return cb(err)
 
-        cb(null, archive)
+        cb(null, archive, drive)
       })
     }
   })

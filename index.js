@@ -11,6 +11,7 @@ function HyperIdentity (archive) {
   if (!(this instanceof HyperIdentity)) return new HyperIdentity(archive)
 
   this.archive = archive
+  this.key = archive.key
 }
 
 HyperIdentity.prototype.setMeta = function (meta, cb) {
