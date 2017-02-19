@@ -12,6 +12,7 @@ const pump = require('pump')
 const Readable = require('stream').Readable
 const ln = require('hyperdrive-ln')
 const swarm = require('hyperdiscovery')
+const {mockService} = require('./helper')
 
 tape('init', function (t) {
   var dir = tmp.dirSync()
@@ -60,14 +61,15 @@ tape('info', function (t) {
 
 tape('login', function (t) {
   var dir = tmp.dirSync()
-  var service = signatures.keyPair()
-  var serviceArchive = hyperdrive(memdb()).createArchive()
+  var serviceKeyPair = signatures.keyPair()
+  var drive = hyperdrive(memdb())
+  var serviceArchive = drive.createArchive()
 
   cmds.init(dir.name, {foo: 'bar'}, (err, id, archive) => {
     t.error(err)
 
     var ID = identity(archive)
-    var token = ID.serviceLinkToken(service, serviceArchive.key)
+    var token = ID.serviceLinkToken(mockService(serviceKeyPair, 'test_service'), serviceArchive.key)
 
     // token will be encoded as base64 to transmit across network
     token = new Buffer(token).toString('base64')
@@ -76,7 +78,7 @@ tape('login', function (t) {
       t.error(err)
 
       // check response is written into the ID archive
-      collect(archive.createFileReadStream(`.proofs/${service.publicKey.toString('hex')}`), (err, data) => {
+      collect(archive.createFileReadStream(`.proofs/${serviceKeyPair.publicKey.toString('hex')}`), (err, data) => {
         t.error(err)
         t.ok(data)
         t.end()

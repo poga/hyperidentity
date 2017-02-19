@@ -68,7 +68,7 @@ Create a link token for `id` for the following purpose:
 1. verify user really own the ID(archive)
 2. give user a service-owned archive to [link](https://github.com/poga/hyperdrive-ln) to its ID.
 
-`service` is an object with two key: `{publicKey, secretKey}`. You need to use `sodium-signatures` to create a keyPair: `signatures.keyPair()`
+`service` is a hyperservice instance.
 
 Returns a token string.
 

@@ -9,7 +9,7 @@ function HyperService (drive, meta, storagePath, keyPair) {
 
   this.keyPair = keyPair || signatures.keyPair()
   this.meta = meta
-  this.path = storagePath
+  this.storagePath = storagePath
   this._drive = drive
   this._archivesForID = {}
   this._connections = {}
@@ -17,19 +17,19 @@ function HyperService (drive, meta, storagePath, keyPair) {
 
 HyperService.prototype.createIdentity = function (key) {
   var archive = this._drive.createArchive(key, {
-    file: name => raf(path.join(this.path, key.toString('hex'), name))
+    file: name => raf(path.join(this.storagePath, key.toString('hex'), name))
   })
   return identity(archive)
 }
 
 HyperService.prototype.issue = function (identity) {
-  return identity.serviceLinkToken(this.keyPair, this._createServiceArchive(identity).key)
+  return identity.serviceLinkToken(this, this._createServiceArchive(identity).key)
 }
 
 HyperService.prototype.verify = function (identity, cb) {
   var sw = connect(identity)
 
-  identity.verifyAcceptingness(this.keyPair, (err, ok) => {
+  identity.verifyAcceptingness(this, (err, ok) => {
     if (err) return done(err)
     if (ok) {
       identity.getMeta((err, meta) => {

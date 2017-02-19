@@ -26,10 +26,13 @@ HyperIdentity.prototype.getMeta = function (cb) {
 }
 
 HyperIdentity.prototype.serviceLinkToken = function (service, archiveKey) {
-  var payload = encrypted.message(service, {publicKey: this.archive.key}, archiveKey)
+  var payload = encrypted.message(service.keyPair, {publicKey: this.archive.key}, archiveKey)
 
   return JSON.stringify({
-    service: service.publicKey,
+    service: {
+      publicKey: service.keyPair.publicKey,
+      meta: service.meta
+    },
     payload: payload
   }, bufferJSON.replacer)
 }
@@ -38,19 +41,19 @@ HyperIdentity.prototype.acceptLinkToken = function (token, cb) {
   var archive = this.archive
   token = JSON.parse(token, bufferJSON.reviver)
   var secretKey = this.archive.metadata.secretKey
-  var link = encrypted.openMessage({publicKey: token.service}, {secretKey}, token.payload)
+  var link = encrypted.openMessage({publicKey: token.service.publicKey}, {secretKey}, token.payload)
 
   if (!link) return cb(new Error('unable to read token'))
 
   var resp = JSON.stringify(createResponse(
-    { publicKey: token.service }, // service
+    { publicKey: token.service.publicKey }, // service
     { secretKey: archive.metadata.secretKey } // self
   ), bufferJSON.replacer)
 
-  pump(source(resp), archive.createFileWriteStream(proofPath(token.service)), err => {
+  pump(source(resp), archive.createFileWriteStream(proofPath(token.service.publicKey)), err => {
     if (err) return cb(err)
 
-    ln.link(archive, linkPath(token.service), link, cb)
+    ln.link(archive, linkPath(token.service), link, token.service.meta, cb)
   })
 
   function createResponse (service, self) {
@@ -65,10 +68,10 @@ HyperIdentity.prototype.verifyAcceptingness = function (service, cb) {
 
     var found = false
     for (var i = 0; i < entries.length; i++) {
-      if (entries[i].name === proofPath(service.publicKey)) {
-        collect(archive.createFileReadStream(proofPath(service.publicKey)), (err, data) => {
+      if (entries[i].name === proofPath(service.keyPair.publicKey)) {
+        collect(archive.createFileReadStream(proofPath(service.keyPair.publicKey)), (err, data) => {
           if (err) return cb(err)
-          var msg = encrypted.openMessage({publicKey: archive.key}, {secretKey: service.secretKey}, JSON.parse(data, bufferJSON.reviver))
+          var msg = encrypted.openMessage({publicKey: archive.key}, {secretKey: service.keyPair.secretKey}, JSON.parse(data, bufferJSON.reviver))
           cb(null, msg.toString() === ACCEPT_MESSAGE)
         })
 
