@@ -1,17 +1,18 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const hyperdrive = require('hyperdrive')
-const memdb = require('memdb')
-const hyperidentity = require('..')
-const signatures = require('sodium-signatures')
-const swarm = require('hyperdiscovery')
+const level = require('level')
+const hyperservice = require('..').service
 
-var drive = hyperdrive(memdb())
+var drive = hyperdrive(level('./service'))
 var app = express()
-var service = signatures.keyPair()
-var serviceArchives = {}
+var service = hyperservice(
+  drive,
+  {name: 'example service'},
+  './storage'
+)
 
-console.log('service', service.publicKey.toString('hex'))
+console.log('service', service.keyPair.publicKey.toString('hex'))
 
 app.use(express.static('public'))
 app.use(bodyParser.json())
@@ -19,42 +20,22 @@ app.use(bodyParser.json())
 app.post('/login', function (req, res) {
   var key = req.body.key
   console.log(key)
-  var userArchive = drive.createArchive(key)
-  var ID = hyperidentity(userArchive)
+  var id = service.createIdentity(key)
+  var token = service.issue(id)
 
-  var serviceArchive = drive.createArchive()
-  serviceArchives[ID.key] = serviceArchive
-  res.json({result: new Buffer(ID.serviceLinkToken(service, serviceArchive.key)).toString('base64')})
+  res.json({result: new Buffer(token).toString('base64')})
 })
 
 app.post('/verifyLogin', function (req, res) {
   var key = req.body.key
   console.log('verifying', key)
-  var userArchive = drive.createArchive(key)
-  var sw = swarm(userArchive)
-  var ID = hyperidentity(userArchive)
-  sw.on('connection', function (peer, type) {
-    console.log('connected to', sw.connections.length, 'peers')
-    peer.on('close', function () {
-      console.log('peer disconnected')
-    })
-  })
-
-  ID.verifyAcceptingness(service, (err, ok) => {
-    console.log('verifyAcceptingness', err, ok)
+  var id = service.createIdentity(key)
+  service.verify(id, (err, verified, meta) => {
     if (err) throw err
-    if (ok) {
-      console.log('get meta')
-      ID.getMeta((err, meta) => {
-        if (err) throw err
-        console.log(meta)
-        res.json({user: meta.toString()})
 
-        sw.close()
-      })
-    } else {
-      res.json({verified: false})
-    }
+    if (!verified) return res.json({verified: false})
+
+    res.json({user: meta.toString()})
   })
 })
 

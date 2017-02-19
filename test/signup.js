@@ -1,5 +1,5 @@
 const tape = require('tape')
-const hyperidentity = require('..')
+const identity = require('..').identity
 const hyperdrive = require('hyperdrive')
 const memdb = require('memdb')
 const signatures = require('sodium-signatures')
@@ -8,7 +8,7 @@ const collect = require('collect-stream')
 tape('signup', function (t) {
   var drive = hyperdrive(memdb())
 
-  var ID = hyperidentity(drive.createArchive())
+  var ID = identity(drive.createArchive())
   var service = signatures.keyPair()
 
   // 1. user provide its ID's public key to service

@@ -2,7 +2,7 @@ const tape = require('tape')
 const cmds = require('../cmd')
 const tmp = require('tmp')
 const signatures = require('sodium-signatures')
-const hyperidentity = require('..')
+const identity = require('..').identity
 const hyperdrive = require('hyperdrive')
 const memdb = require('memdb')
 const collect = require('collect-stream')
@@ -66,7 +66,7 @@ tape('login', function (t) {
   cmds.init(dir.name, {foo: 'bar'}, (err, id, archive) => {
     t.error(err)
 
-    var ID = hyperidentity(archive)
+    var ID = identity(archive)
     var token = ID.serviceLinkToken(service, serviceArchive.key)
 
     // token will be encoded as base64 to transmit across network

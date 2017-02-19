@@ -1,4 +1,4 @@
-const hyperidentity = require('.')
+const identity = require('.').identity
 const raf = require('random-access-file')
 const path = require('path')
 const swarm = require('hyperdiscovery')
@@ -68,7 +68,7 @@ function init (dir, meta, cb) {
     file: name => raf(path.join(dir, name))
   })
 
-  var id = hyperidentity(archive)
+  var id = identity(archive)
   id.setMeta(meta, done)
 
   function done (err) {
@@ -85,7 +85,7 @@ function info (archive, cb) {
 }
 
 function login (archive, encodedToken, cb) {
-  var id = hyperidentity(archive)
+  var id = identity(archive)
   var decoded = new Buffer(encodedToken, 'base64')
   id.acceptLinkToken(decoded, err => {
     if (err) return cb(err)
