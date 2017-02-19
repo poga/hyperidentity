@@ -26,10 +26,12 @@ HyperService.prototype.issue = function (identity) {
   return identity.serviceLinkToken(this.keyPair, this._createServiceArchive(identity).key)
 }
 
-HyperService.prototype.verify = function (identity, cb) {
+HyperService.prototype.verify = function (identity, opts, cb) {
+  if (cb === undefined) return this.verify(identity, {}, opts)
+
   var sw = connect(identity)
 
-  identity.verifyAcceptingness(this.keyPair, (err, ok) => {
+  identity.verifyAcceptingness(this.keyPair, opts, (err, ok) => {
     if (err) return done(err)
     if (ok) {
       identity.getMeta((err, meta) => {

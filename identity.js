@@ -58,9 +58,22 @@ HyperIdentity.prototype.acceptLinkToken = function (token, cb) {
   }
 }
 
-HyperIdentity.prototype.verifyAcceptingness = function (service, cb) {
+HyperIdentity.prototype.verifyAcceptingness = function (service, opts, cb) {
+  if (cb === undefined) return this.verifyAcceptingness(service, {}, opts)
+
+  var timeout = opts.timeout || 5000 // reject if no connection after 5 seconds
+  var timedOut = false // is the verification already timed out?
+
   var archive = this.archive
+  var verifyTimeout = setTimeout(function () {
+    timedOut = true
+    cb(new Error('Unable to verify in time'), false)
+  }, timeout)
+
   archive.list((err, entries) => {
+    if (timedOut) return false // do nothing if already timed out
+    clearTimeout(verifyTimeout)
+
     if (err) return cb(err)
 
     var found = false
