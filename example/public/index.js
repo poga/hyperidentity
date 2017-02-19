@@ -10,7 +10,7 @@ $('#login').click(function (e) {
     console.log(data)
     $('#token').text(data.result)
 
-    var loop = setInterval(function () {
+    function waitForVerify () {
       $.ajax({
         url: '/verifyLogin',
         dataType: 'json',
@@ -21,9 +21,14 @@ $('#login').click(function (e) {
         console.log(data)
         if (data.user) {
           $('#user').text(JSON.stringify(data.user))
-          clearInterval(loop)
+        } else {
+          waitForVerify()
         }
-      }).fail(console.error)
-    }, 10000)
+      }).fail(() => {
+        console.log('failed')
+        waitForVerify()
+      })
+    }
+    waitForVerify()
   })
 })
