@@ -34,7 +34,7 @@ $ hi login path_to_my_identity token
 ```js
 const hyperdrive = require('hyperdrive')
 const memdb = require('memdb')
-const hyperidentity = require('hyperidentity')
+const identity = require('hyperidentity').identity
 const signatures = require('sodium-signatures')
 
 // create a new hyperdrive
