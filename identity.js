@@ -5,6 +5,9 @@ const ln = require('hyperdrive-ln')
 const encrypted = require('encrypted-message')
 const bufferJSON = require('buffer-json')
 
+const META_FILE = '.identity.json'
+const ACCEPT_MESSAGE = 'APPROVED'
+
 module.exports = HyperIdentity
 
 function HyperIdentity (archive) {
@@ -15,11 +18,11 @@ function HyperIdentity (archive) {
 }
 
 HyperIdentity.prototype.setMeta = function (meta, cb) {
-  pump(source(JSON.stringify(meta)), this.archive.createFileWriteStream('identity.json'), cb)
+  pump(source(JSON.stringify(meta)), this.archive.createFileWriteStream(META_FILE), cb)
 }
 
 HyperIdentity.prototype.getMeta = function (cb) {
-  collect(this.archive.createFileReadStream('identity.json'), cb)
+  collect(this.archive.createFileReadStream(META_FILE), cb)
 }
 
 HyperIdentity.prototype.serviceLinkToken = function (service, archiveKey) {
@@ -51,7 +54,7 @@ HyperIdentity.prototype.acceptLinkToken = function (token, cb) {
   })
 
   function createResponse (service, self) {
-    return encrypted.message(self, service, 'APPROVED')
+    return encrypted.message(self, service, ACCEPT_MESSAGE)
   }
 }
 
@@ -66,7 +69,7 @@ HyperIdentity.prototype.verifyAcceptingness = function (service, cb) {
         collect(archive.createFileReadStream(proofPath(service.publicKey)), (err, data) => {
           if (err) return cb(err)
           var msg = encrypted.openMessage({publicKey: archive.key}, {secretKey: service.secretKey}, JSON.parse(data, bufferJSON.reviver))
-          cb(null, msg.toString() === 'APPROVED')
+          cb(null, msg.toString() === ACCEPT_MESSAGE)
         })
 
         found = true
