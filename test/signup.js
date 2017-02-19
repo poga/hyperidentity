@@ -1,11 +1,9 @@
 const tape = require('tape')
 const identity = require('..').identity
-const service = require('..').service
 const hyperdrive = require('hyperdrive')
 const memdb = require('memdb')
 const signatures = require('sodium-signatures')
 const collect = require('collect-stream')
-const tmp = require('tmp')
 
 tape('signup', function (t) {
   var drive = hyperdrive(memdb())
@@ -37,25 +35,5 @@ tape('signup', function (t) {
         t.end()
       })
     })
-  })
-})
-
-tape('verification timeout', function (t) {
-  var drive = hyperdrive(memdb())
-
-  var ID = identity(drive.createArchive())
-
-  var serviceDrive = hyperdrive(memdb())
-  var dir = tmp.dirSync()
-
-  var idOnServiceSide = identity(serviceDrive.createArchive(ID.key))
-  var hs = service(serviceDrive, {name: 'test service'}, dir.name)
-
-  hs.verify(idOnServiceSide, {timeout: 5000}, (err, verified, meta) => {
-    t.same(err, new Error('Unable to verify in time'))
-    t.notOk(verified)
-    t.notOk(meta)
-
-    t.end()
   })
 })
