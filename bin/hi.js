@@ -28,10 +28,10 @@ function doCommand (cmd) {
           if (err) throw err
         })
         break
-      case 'online':
+      case 'up':
         cmds.up(drive, archive, (err, conns) => {
           if (err) throw err
-          console.log('online')
+          console.log('up')
         })
         break
     }
