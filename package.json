@@ -17,7 +17,7 @@
     "ed2curve": "^0.2.1",
     "encrypted-message": "^1.0.2",
     "hyperdiscovery": "^1.1.0",
-    "hyperdrive": "^7.14.2",
+    "hyperdrive": "^7.14.3",
     "hyperdrive-import-files": "^2.10.0",
     "hyperdrive-ln": "^3.3.1",
     "json-buffer": "^2.0.11",
