@@ -71,7 +71,7 @@ In hyperidentity, we use a p2p hypermedia protocol called [Dat](https://www.datp
 
 Modern web application is all about creating and sharing data in a scalable way. The Dat protocol allows us to both control our data and share it to the web service we trust.
 
-Each web service can have their own peer to replicate your data, or just use existing peers as backend. Since all peers have the same data and only **you**, as the host, can update the data being shared, This avoids **vendor lock-in** and **single-point-of-failure**.
+Each web service can have their own peer to replicate your data, or just use existing peers as backend. Since all peers have the same data and only you, as the host, can update the data being shared, it avoids problems such as **vendor lock-in** and **single-point-of-failure**.
 
 #### two-way data sharing
 
