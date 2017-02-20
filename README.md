@@ -38,7 +38,6 @@ and many other cool things!
         * [s.verify(identity, cb)](#sverifyidentity-cb)
   * [Architecture](#architecture)
      * [High-level view](#high-level-view)
-        * [two-way data sharing](#two-way-data-sharing)
   * [License](#license)
 
 
@@ -152,8 +151,6 @@ Hyperidentity use a hybrid architecture between fully decentralized web and trad
 In hyperidentity, we use a p2p hypermedia protocol called [Dat](https://www.datprotocol.com/) to store the most important thing on the web: **the data you've created**.
 
 Modern web application is all about creating and sharing data in a scalable way. The Dat protocol allows us to both control our data and share it to the web service we trust. Each web service can have their own peer to replicate your data, or just use existing peers as backend. Since all peers have the same data and only you, as the host, can update the data being shared, it avoids problems such as **vendor lock-in** and **single-point-of-failure**.
-
-#### two-way data sharing
 
 However, it's very limiting if the web services can never write their own data. To solve the problem, hyperidentity use [decentralized-symlink](https://github.com/poga/hyperdrive-ln) to link your identity to an archive hosted by the web service. By merging two archive together, hyperidentity becomes an **decentralized eventually-consistent storage**.
 
