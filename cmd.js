@@ -81,7 +81,25 @@ function init (dir, meta, cb) {
 }
 
 function info (archive, cb) {
-  cb(null, {key: archive.key})
+  var result = {key: archive.key, links: []}
+  archive.list((err, entries) => {
+    if (err) return cb(err)
+
+    var links = entries.filter(e => e.name.startsWith('.links'))
+
+    async.map(
+      links,
+      (entry, cb) => {
+        ln.readlink(archive, entry.name, cb)
+      },
+      (err, links) => {
+        if (err) return cb(err)
+        result.links = links
+
+        cb(null, result)
+      }
+    )
+  })
 }
 
 function login (archive, encodedToken, cb) {

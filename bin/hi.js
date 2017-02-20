@@ -18,9 +18,10 @@ function doCommand (cmd) {
 
     switch (cmd) {
       case 'info':
-        cmds.info(archive, function (err, archive) {
+        cmds.info(archive, function (err, info) {
           if (err) throw err
-          console.log(archive.key.toString('hex'))
+          console.log(info.key.toString('hex'))
+          info.links.forEach(l => console.log(l))
         })
         break
       case 'login':

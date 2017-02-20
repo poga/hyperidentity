@@ -81,7 +81,13 @@ tape('login', function (t) {
       collect(archive.createFileReadStream(`.proofs/${serviceKeyPair.publicKey.toString('hex')}`), (err, data) => {
         t.error(err)
         t.ok(data)
-        t.end()
+
+        cmds.info(archive, (err, info) => {
+          t.error(err)
+          t.same(info.key, archive.key)
+          t.same(info.links, [{link: serviceArchive.key.toString('hex'), meta: {name: 'test_service'}}])
+          t.end()
+        })
       })
     })
   })
