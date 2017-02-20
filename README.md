@@ -1,4 +1,4 @@
-# hyperidentity
+# Hyperidentity
 
 🌏🆔 
 
@@ -6,7 +6,9 @@
 [![NPM Version](https://img.shields.io/npm/v/hyperidentity.svg)](https://www.npmjs.com/package/hyperidentity)
 [![JavaScript Style Guide](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 
-A decentralized authentication and data-sharing protocol. Hyperidentity allows you to
+A decentralized authentication and data-sharing protocol.
+
+Hyperidentity allows you to
 
 * **Own your data**:  Provide your data to a web services but still controll what you've shared.
 * **Avoid vendor lock-in**: Move your data between services.
@@ -39,6 +41,8 @@ and many other cool things!
   * [License](#license)
 
 ## Usage
+
+Hyperidentity provides a CLI tool to manage your identity.
 
 * Create an identity at `./my-id`:
 
