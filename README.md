@@ -18,12 +18,10 @@ and many other cool things!
 
 `npm i -g hyperidentity`
 
+
 # Table of Contents
 
   * [Usage](#usage)
-  * [Architecture](#architecture)
-     * [High-level view](#high-level-view)
-        * [two-way data sharing](#two-way-data-sharing)
   * [API](#api)
      * [Identity](#identity)
         * [id = identity(archive)](#id--identityarchive)
@@ -38,7 +36,11 @@ and many other cool things!
         * [s.createIdentity(key)](#screateidentitykey)
         * [s.issue(identity)](#sissueidentity)
         * [s.verify(identity, cb)](#sverifyidentity-cb)
+  * [Architecture](#architecture)
+     * [High-level view](#high-level-view)
+        * [two-way data sharing](#two-way-data-sharing)
   * [License](#license)
+
 
 ## Usage
 
@@ -63,31 +65,6 @@ $ hi login my-id token
 $ hi up my-id
 ```
 
-## Architecture
-
-Hyperidentity use a hybrid architecture between fully decentralized web and traditional web service.
-
-The concept is very similiar to the article [Achieving Scale in the Decentralized Web](https://pfrazee.github.io/blog/achieving-scale). Highly recommended article if you never read it before.
-
-### High-level view
-
-![architecture](architecture.png)
-
-In hyperidentity, we use a p2p hypermedia protocol called [Dat](https://www.datprotocol.com/) to store the most important thing on the web: **the data you've created**.
-
-Modern web application is all about creating and sharing data in a scalable way. The Dat protocol allows us to both control our data and share it to the web service we trust.
-
-Each web service can have their own peer to replicate your data, or just use existing peers as backend. Since all peers have the same data and only you, as the host, can update the data being shared, it avoids problems such as **vendor lock-in** and **single-point-of-failure**.
-
-#### two-way data sharing
-
-However, it's very limiting if the web services can never write their own data.
-
-To solve the problem, hyperidentity use [decentralized-symlink](https://github.com/poga/hyperdrive-ln) to link your identity to an archive hosted by the web service.
-
-By merging two archive together, hyperidentity becomes an **decentralized eventually-consistent storage**.
-
-Since the service-hosted archive is also publicly replicated between you and the web services, you can save or fork the archive whenever backup or data-migration is needed.
 
 ## API
 
@@ -162,6 +139,34 @@ Issue a **link token** for that identity.
 #### `s.verify(identity, cb)`
 
 Verify whether identity is accepted the link token. This method will block if identity is not online.
+
+
+## Architecture
+
+Hyperidentity use a hybrid architecture between fully decentralized web and traditional web service.
+
+The concept is very similiar to the article [Achieving Scale in the Decentralized Web](https://pfrazee.github.io/blog/achieving-scale). Highly recommended article if you never read it before.
+
+### High-level view
+
+![architecture](architecture.png)
+
+In hyperidentity, we use a p2p hypermedia protocol called [Dat](https://www.datprotocol.com/) to store the most important thing on the web: **the data you've created**.
+
+Modern web application is all about creating and sharing data in a scalable way. The Dat protocol allows us to both control our data and share it to the web service we trust.
+
+Each web service can have their own peer to replicate your data, or just use existing peers as backend. Since all peers have the same data and only you, as the host, can update the data being shared, it avoids problems such as **vendor lock-in** and **single-point-of-failure**.
+
+#### two-way data sharing
+
+However, it's very limiting if the web services can never write their own data.
+
+To solve the problem, hyperidentity use [decentralized-symlink](https://github.com/poga/hyperdrive-ln) to link your identity to an archive hosted by the web service.
+
+By merging two archive together, hyperidentity becomes an **decentralized eventually-consistent storage**.
+
+Since the service-hosted archive is also publicly replicated between you and the web services, you can save or fork the archive whenever backup or data-migration is needed.
+
 
 ## License
 
