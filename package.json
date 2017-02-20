@@ -19,7 +19,7 @@
     "hyperdiscovery": "^1.1.0",
     "hyperdrive": "^7.14.3",
     "hyperdrive-import-files": "^2.10.0",
-    "hyperdrive-ln": "^3.3.1",
+    "hyperdrive-ln": "^3.4.0",
     "json-buffer": "^2.0.11",
     "level": "^1.6.0",
     "mkdirp": "^0.5.1",

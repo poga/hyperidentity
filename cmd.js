@@ -28,10 +28,10 @@ function up (drive, archive, opts, cb) {
       (entry, cb) => {
         ln.readlink(archive, entry.name, cb)
       },
-      (err, keys) => {
+      (err, links) => {
         if (err) return cb(err)
 
-        var conns = keys.reduce((result, key) => { return result.concat([clone(key)]) }, [])
+        var conns = links.reduce((result, link) => { return result.concat([clone(link.link)]) }, [])
         // push self
         conns.push({archive, sw: self})
 

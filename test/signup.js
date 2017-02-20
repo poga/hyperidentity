@@ -5,18 +5,20 @@ const memdb = require('memdb')
 const signatures = require('sodium-signatures')
 const collect = require('collect-stream')
 const {mockService} = require('./helper')
+const ln = require('hyperdrive-ln')
 
 tape('signup', function (t) {
   var drive = hyperdrive(memdb())
 
   var ID = identity(drive.createArchive())
   var serviceKeyPair = signatures.keyPair()
+  var serviceArchive = drive.createArchive()
 
   var mockedService = mockService(serviceKeyPair, 'test_service')
   // 1. user provide its ID's public key to service
   // 2. service create a new archive to store user's data
   // 3. service create a link request token for the user
-  var linkToken = ID.serviceLinkToken(mockedService, '<ARCHIVE_KEY>')
+  var linkToken = ID.serviceLinkToken(mockedService, serviceArchive.key)
 
   // 4. user received the token, pass it to its ID,
   //    ID should verify the token and write a response to its archive
@@ -28,13 +30,18 @@ tape('signup', function (t) {
       t.error(err)
       t.ok(data)
 
-      // 5. service watch the archive list, find the proof, verify it
-      ID.verifyAcceptingness(mockedService, (err, verified) => {
+      ln.readlink(ID.archive, `.links/${serviceKeyPair.publicKey.toString('hex')}`, (err, info) => {
         t.error(err)
-        t.ok(verified)
+        t.same(info, {link: serviceArchive.key.toString('hex'), meta: {name: 'test_service'}})
 
-        // 6. and it's done!
-        t.end()
+        // 5. service watch the archive list, find the proof, verify it
+        ID.verifyAcceptingness(mockedService, (err, verified) => {
+          t.error(err)
+          t.ok(verified)
+
+          // 6. and it's done!
+          t.end()
+        })
       })
     })
   })

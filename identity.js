@@ -53,7 +53,7 @@ HyperIdentity.prototype.acceptLinkToken = function (token, cb) {
   pump(source(resp), archive.createFileWriteStream(proofPath(token.service.publicKey)), err => {
     if (err) return cb(err)
 
-    ln.link(archive, linkPath(token.service), link, token.service.meta, cb)
+    ln.link(archive, linkPath(token.service.publicKey), link, token.service.meta, cb)
   })
 
   function createResponse (service, self) {
