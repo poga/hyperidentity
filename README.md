@@ -81,13 +81,13 @@ Each web service can have their own peer to replicate your data, or just use exi
 
 #### two-way data sharing
 
-But, it's very limiting if the web services can never write their own data.
+However, it's very limiting if the web services can never write their own data.
 
-To solve the problem, hyperidentity use [symlink](https://github.com/poga/hyperdrive-ln) to link your identity to an archive hosted by the web service.
+To solve the problem, hyperidentity use [decentralized-symlink](https://github.com/poga/hyperdrive-ln) to link your identity to an archive hosted by the web service.
 
 By merging two archive together, hyperidentity becomes an **decentralized eventually-consistent storage**.
 
-Since the service-hosted archive is also publicly replicated between you and web services, you can save or fork the archive whenever backup or data-migration is needed.
+Since the service-hosted archive is also publicly replicated between you and the web services, you can save or fork the archive whenever backup or data-migration is needed.
 
 ## API
 
