@@ -22,6 +22,10 @@ HyperService.prototype.createIdentity = function (key) {
   return identity(archive)
 }
 
+HyperService.prototype.getWritableArchive = function (identity) {
+  return this._archivesForID[identity.key]
+}
+
 HyperService.prototype.issue = function (identity) {
   return identity.serviceLinkToken(this, this._createServiceArchive(identity).key)
 }
