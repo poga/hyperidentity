@@ -1,5 +1,7 @@
 # hyperidentity
 
+🌏🆔 
+
 ![stability-experimental](https://img.shields.io/badge/stability-experimental-orange.svg?style=flat-square)
 [![NPM Version](https://img.shields.io/npm/v/hyperidentity.svg)](https://www.npmjs.com/package/hyperidentity)
 [![JavaScript Style Guide](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
