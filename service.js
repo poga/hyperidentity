@@ -4,8 +4,8 @@ const swarm = require('hyperdiscovery')
 const path = require('path')
 const raf = require('random-access-file')
 
-function HyperService (drive, meta, storagePath, keyPair) {
-  if (!(this instanceof HyperService)) return new HyperService(drive, meta, storagePath, keyPair)
+function Service (drive, meta, storagePath, keyPair) {
+  if (!(this instanceof Service)) return new Service(drive, meta, storagePath, keyPair)
 
   this.keyPair = keyPair || signatures.keyPair()
   this.meta = meta
@@ -15,22 +15,22 @@ function HyperService (drive, meta, storagePath, keyPair) {
   this._connections = {}
 }
 
-HyperService.prototype.createIdentity = function (key) {
+Service.prototype.createIdentity = function (key) {
   var archive = this._drive.createArchive(key, {
     file: name => raf(path.join(this.storagePath, key.toString('hex'), name))
   })
   return identity(archive)
 }
 
-HyperService.prototype.getWritableArchive = function (identity) {
+Service.prototype.getWritableArchive = function (identity) {
   return this._archivesForID[identity.key]
 }
 
-HyperService.prototype.issue = function (identity) {
+Service.prototype.issue = function (identity) {
   return identity.serviceLinkToken(this, this._createServiceArchive(identity).key)
 }
 
-HyperService.prototype.verify = function (identity, cb) {
+Service.prototype.verify = function (identity, cb) {
   var sw = connect(identity)
 
   identity.verifyAcceptingness(this, (err, ok) => {
@@ -52,13 +52,13 @@ HyperService.prototype.verify = function (identity, cb) {
   }
 }
 
-HyperService.prototype._createServiceArchive = function (identity) {
+Service.prototype._createServiceArchive = function (identity) {
   var archive = this._drive.createArchive()
   this._archivesForID[identity.key] = archive
   return archive
 }
 
-module.exports = HyperService
+module.exports = Service
 
 function connect (identity) {
   return swarm(identity.archive)
