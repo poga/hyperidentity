@@ -74,9 +74,19 @@ function init (dir, meta, cb) {
   function done (err) {
     if (err) cb(err)
 
-    var importStatus = importFiles(archive, dir, {ignore: [path => path.indexOf('.hyperidentity') !== -1], index: true}, err => {
-      cb(err, id, archive, importStatus, drive)
-    })
+    var importStatus = importFiles(
+      archive,
+      dir,
+      {
+        ignore: [
+          '/**/.hyperidentity/**',
+          '/**/.proof/**',
+          '/**/.links/**'
+        ],
+        index: true
+      }, err => {
+        cb(err, id, archive, importStatus, drive)
+      })
   }
 }
 

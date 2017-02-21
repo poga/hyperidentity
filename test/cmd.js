@@ -46,6 +46,24 @@ tape('init and import', function (t) {
   })
 })
 
+tape('init import should ignore sensitive data', function (t) {
+  var dir = tmp.dirSync()
+  fs.mkdirSync(path.join(dir.name, '.proof'))
+  fs.writeFileSync(path.join(dir.name, '.proof', 'etst'), 'hello')
+
+  cmds.init(dir.name, {foo: 'bar'}, (err, id, archive) => {
+    t.error(err)
+    t.ok(id)
+    t.ok(archive)
+
+    collect(archive.createFileReadStream('.proof/test'), (err, data) => {
+      t.ok(err)
+      t.notOk(data)
+      t.end()
+    })
+  })
+})
+
 tape('info', function (t) {
   var dir = tmp.dirSync()
   cmds.init(dir.name, {foo: 'bar'}, (err, id, archive) => {
