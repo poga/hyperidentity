@@ -29,7 +29,6 @@ A decentralized authentication and data-sharing protocol. Hyperidentity solves t
         * [s.issue(identity)](#sissueidentity)
         * [s.verify(identity, cb)](#sverifyidentity-cb)
   * [Architecture](#architecture)
-     * [High-level view](#high-level-view)
   * [License](#license)
 
 
@@ -141,8 +140,6 @@ Verify whether identity is accepted the link token. This method will block if id
 ## Architecture
 
 Hyperidentity use a hybrid architecture between fully decentralized web and traditional web service. The concept is very similiar to the article [Achieving Scale in the Decentralized Web](https://pfrazee.github.io/blog/achieving-scale). Highly recommended article if you never read it before.
-
-### High-level view
 
 ![architecture](architecture.png)
 
