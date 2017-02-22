@@ -6,15 +6,7 @@
 [![NPM Version](https://img.shields.io/npm/v/hyperidentity.svg)](https://www.npmjs.com/package/hyperidentity)
 [![JavaScript Style Guide](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 
-A decentralized authentication and data-sharing protocol.
-
-Hyperidentity allows you to
-
-* **Own your data**:  Provide your data to a web services but still controll what you've shared.
-* **Avoid vendor lock-in**: Move your data between services.
-* **No single-point-of-failure**: Every service can have a up-to-date copy of your data. There won't be a single service depended by all other services. Think github and all other Code Review/Deploy/Project Management tools.
-
-and many other cool things!
+A decentralized authentication and data-sharing protocol. Hyperidentity solves the core problem of centralized web services: **vendor lock-in**, **data-ownership**, and **single-point-of-failure**.
 
 `npm i -g hyperidentity`
 
@@ -43,25 +35,31 @@ and many other cool things!
 
 ## Usage
 
-Hyperidentity provides a CLI tool to manage your identity.
+You can use Hyperidentity from CLI:
 
-* Create an identity at `./my-id`:
+* Create an identity at `./me`:
 
 ```
-$ hi init my-id
+$ hi init me
 56d0a72488190d37aaa28447a5600eafe67df00bf89ab646def449c17e331a56 // your identity key
 ```
 
 * Login to a service:
 
 ```
-$ hi login my-id token
+$ hi login me token
+```
+
+* show a list of services you've logged-in and your identity key
+
+```
+$ hi info me
 ```
 
 * bring your identity online:
 
 ```
-$ hi up my-id
+$ hi up me
 ```
 
 
