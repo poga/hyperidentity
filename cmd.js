@@ -7,6 +7,7 @@ const hyperdrive = require('hyperdrive')
 const level = require('level')
 const ln = require('hyperdrive-ln')
 const async = require('async')
+const localServer = require('./localServer')
 
 const DEFAULT_CLONE_PATH = '~/.hyperidentity-linked'
 
@@ -35,7 +36,11 @@ function up (drive, archive, opts, cb) {
         // push self
         conns.push({archive, sw: self})
 
-        cb(null, conns)
+        startLocalServer(archive, (err, server) => {
+          if (err) return cb(err)
+
+          cb(null, conns, server)
+        })
       }
     )
   })
@@ -45,6 +50,13 @@ function up (drive, archive, opts, cb) {
     var sw = swarm(archive)
 
     return {archive, sw}
+  }
+
+  function startLocalServer (archive, cb) {
+    var app = localServer(archive)
+    var server = app.listen(9064, err => {
+      cb(err, server)
+    })
   }
 }
 
