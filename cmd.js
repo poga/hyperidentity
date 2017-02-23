@@ -1,4 +1,4 @@
-const identity = require('.').identity
+const identity = require('./identity')
 const raf = require('random-access-file')
 const path = require('path')
 const swarm = require('hyperdiscovery')
