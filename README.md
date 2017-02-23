@@ -1,12 +1,12 @@
 # Hyperidentity
 
-🌏🆔 
+🌏🆔  Decentralized identity management
 
 ![stability-experimental](https://img.shields.io/badge/stability-experimental-orange.svg?style=flat-square)
 [![NPM Version](https://img.shields.io/npm/v/hyperidentity.svg)](https://www.npmjs.com/package/hyperidentity)
 [![JavaScript Style Guide](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 
-A decentralized authentication and data-sharing protocol. Hyperidentity solves the core problem of centralized web services: **vendor lock-in**, **data-ownership**, and **single-point-of-failure**.
+Hyperidentity solves the core problem of centralized web services: **vendor lock-in**, **data-ownership**, and **single-point-of-failure**.
 
 `npm i -g hyperidentity`
 
@@ -139,7 +139,7 @@ Verify whether identity is accepted the link token. This method will block if id
 
 ## Architecture
 
-Hyperidentity use a hybrid architecture between fully decentralized web and traditional web service. The concept is very similiar to the article [Achieving Scale in the Decentralized Web](https://pfrazee.github.io/blog/achieving-scale). Highly recommended article if you never read it before.
+Hyperidentity use a hybrid architecture between fully decentralized web and traditional web service.
 
 ![architecture](architecture.png)
 
