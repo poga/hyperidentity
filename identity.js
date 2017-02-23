@@ -8,24 +8,24 @@ const bufferJSON = require('buffer-json')
 const META_FILE = '.identity.json'
 const ACCEPT_MESSAGE = 'APPROVED'
 
-module.exports = HyperIdentity
+module.exports = Identity
 
-function HyperIdentity (archive) {
-  if (!(this instanceof HyperIdentity)) return new HyperIdentity(archive)
+function Identity (archive) {
+  if (!(this instanceof Identity)) return new Identity(archive)
 
   this.archive = archive
   this.key = archive.key
 }
 
-HyperIdentity.prototype.setMeta = function (meta, cb) {
+Identity.prototype.setMeta = function (meta, cb) {
   pump(source(JSON.stringify(meta)), this.archive.createFileWriteStream(META_FILE), cb)
 }
 
-HyperIdentity.prototype.getMeta = function (cb) {
+Identity.prototype.getMeta = function (cb) {
   collect(this.archive.createFileReadStream(META_FILE), cb)
 }
 
-HyperIdentity.prototype.serviceLinkToken = function (service, archiveKey) {
+Identity.prototype.serviceLinkToken = function (service, archiveKey) {
   var payload = encrypted.message(service.keyPair, {publicKey: this.archive.key}, archiveKey)
 
   return JSON.stringify({
@@ -37,7 +37,7 @@ HyperIdentity.prototype.serviceLinkToken = function (service, archiveKey) {
   }, bufferJSON.replacer)
 }
 
-HyperIdentity.prototype.acceptLinkToken = function (token, cb) {
+Identity.prototype.acceptLinkToken = function (token, cb) {
   var archive = this.archive
   token = JSON.parse(token, bufferJSON.reviver)
   var secretKey = this.archive.metadata.secretKey
@@ -61,7 +61,7 @@ HyperIdentity.prototype.acceptLinkToken = function (token, cb) {
   }
 }
 
-HyperIdentity.prototype.verifyAcceptingness = function (service, cb) {
+Identity.prototype.verifyAcceptingness = function (service, cb) {
   var archive = this.archive
   archive.list((err, entries) => {
     if (err) return cb(err)
