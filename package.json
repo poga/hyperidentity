@@ -12,26 +12,21 @@
   },
   "repository": "poga/hyperidentity",
   "dependencies": {
-    "body-parser": "^1.16.1",
     "buffer-json": "^1.0.0",
     "collect-stream": "^1.2.1",
-    "ed2curve": "^0.2.1",
     "encrypted-message": "^1.0.2",
     "hyperdiscovery": "^1.1.0",
     "hyperdrive": "^7.14.3",
     "hyperdrive-import-files": "^2.10.0",
     "hyperdrive-ln": "^3.4.0",
-    "json-buffer": "^2.0.11",
     "level": "^1.6.0",
     "mkdirp": "^0.5.1",
     "pump": "^1.0.1",
-    "random-access-file": "^1.5.0",
-    "sodium-encryption": "^1.2.2",
-    "sodium-signatures": "^1.4.1"
+    "random-access-file": "^1.5.0"
   },
   "devDependencies": {
+    "sodium-signatures": "^1.4.1",
     "memdb": "^1.3.1",
-    "superagent": "^3.4.4",
     "tape": "^4.6.3",
     "tmp": "0.0.31"
   }

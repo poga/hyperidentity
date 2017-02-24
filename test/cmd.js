@@ -13,7 +13,6 @@ const Readable = require('stream').Readable
 const ln = require('hyperdrive-ln')
 const swarm = require('hyperdiscovery')
 const {mockService} = require('./helper')
-const request = require('superagent')
 
 tape('init', function (t) {
   var dir = tmp.dirSync()
@@ -138,7 +137,7 @@ tape('up', function (t) {
 
   function doTest (drive, archive) {
     var clonedTo = path.join(dir.name, 'up_test')
-    cmds.up(drive, archive, {clone_path: clonedTo}, (err, conns, server) => {
+    cmds.up(drive, archive, {clone_path: clonedTo}, (err, conns) => {
       t.error(err)
       t.equal(conns.length, 2)
       t.equal(conns[1].archive.key, archive.key)
@@ -150,14 +149,7 @@ tape('up', function (t) {
         fs.stat(path.join(clonedTo, 'hello.txt'), (err, stat) => {
           t.error(err)
           t.ok(stat)
-          request.get('http://localhost:9064/ping').end(function (err, res) {
-            t.error(err)
-            t.same(res.body, {status: 'pong'})
-
-            server.close()
-
-            done(conns)
-          })
+          done(conns)
         })
       })
     })

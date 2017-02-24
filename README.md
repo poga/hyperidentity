@@ -23,11 +23,6 @@ Hyperidentity solves the core problem of centralized web services: **vendor lock
         * [token = id.serviceLinkToken(service, archiveKey)](#token--idservicelinktokenservice-archivekey)
         * [id.acceptLinkToken(token, cb(err))](#idacceptlinktokentoken-cberr)
         * [id.verifyAcceptingness(service, cb(err, verified))](#idverifyacceptingnessservice-cberr-verified)
-     * [Service](#service)
-        * [var s = service(drive, meta, storagePath, [keyPair])](#var-s--servicedrive-meta-storagepath-keypair)
-        * [s.createIdentity(key)](#screateidentitykey)
-        * [s.issue(identity)](#sissueidentity)
-        * [s.verify(identity, cb)](#sverifyidentity-cb)
   * [Architecture](#architecture)
   * [License](#license)
 
@@ -109,32 +104,6 @@ Accept a link token. Under the hood, this will:
 #### `id.verifyAcceptingness(service, cb(err, verified))`
 
 Check whether `id` accepted the link token from `service`.
-
-### Service
-
-A service is a web service that allows users to login with their hyperidentity a.k.a hyperservice.
-
-`var service = require('hyperidentity').service`
-
-#### `var s = service(drive, meta, storagePath, [keyPair])`
-
-Create a new hyperservice.
-
-Identity data will be stored in `storagePath`.
-
-If `keyPair` is empty, it will generate one for you.
-
-#### `s.createIdentity(key)`
-
-Create a hyperidentity from given key.
-
-#### `s.issue(identity)`
-
-Issue a **link token** for that identity.
-
-#### `s.verify(identity, cb)`
-
-Verify whether identity is accepted the link token. This method will block if identity is not online.
 
 
 ## Architecture
