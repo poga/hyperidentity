@@ -3,8 +3,8 @@
 🌏🆔  Decentralized Identity
 
 ![stability-experimental](https://img.shields.io/badge/stability-experimental-orange.svg?style=flat-square)
-[![NPM Version](https://img.shields.io/npm/v/hyperidentity.svg)](https://www.npmjs.com/package/hyperidentity)
-[![JavaScript Style Guide](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
+[![NPM Version](https://img.shields.io/npm/v/hyperidentity.svg?style=flat-square)](https://www.npmjs.com/package/hyperidentity)
+[![JavaScript Style Guide](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square)](http://standardjs.com/)
 
 Hyperidentity tried to solve the core problem of centralized web services: **vendor lock-in**, **data-ownership**, and **single-point-of-failure**.
 
@@ -99,7 +99,7 @@ Returns a token string.
 Accept a link token. Under the hood, this will:
 
 1. write a response to `.proofs/${service.publicKey}`
-2. link `archiveKey` at `.links/${service.publicKey}
+2. link `archiveKey` at `.links/${service.publicKey}`
 
 #### `id.verifyAcceptingness(service, cb(err, verified))`
 
