@@ -12,6 +12,7 @@
   },
   "repository": "poga/hyperidentity",
   "dependencies": {
+    "async": "^2.6.0",
     "buffer-json": "^1.0.0",
     "collect-stream": "^1.2.1",
     "encrypted-message": "^1.0.2",
